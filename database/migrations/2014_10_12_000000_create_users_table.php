@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('user_first_name');
             $table->string('user_surname');
             $table->rememberToken();
-            $table->integer('user_status');
+            $table->integer('user_status')->default("1");
             $table->dateTime('user_date_last_updated')->nullable();
             $table->dateTime('user_date_created')->useCurrent();
             $table->dateTime('user_date_deleted')->nullable();

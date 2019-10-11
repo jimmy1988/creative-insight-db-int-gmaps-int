@@ -15,7 +15,7 @@ class CreateUserStatusTable extends Migration
     {
         Schema::create('user_status', function (Blueprint $table) {
             $table->integer('user_status_id')->autoIncrement();
-            $table->string('user_status')->autoIncrement();
+            $table->string('user_status');
         });
     }
 
