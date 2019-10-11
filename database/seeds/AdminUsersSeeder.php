@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class AdminUsersSeeder extends Seeder
 {
@@ -17,7 +18,7 @@ class AdminUsersSeeder extends Seeder
         'user_email' => "james.mchugh.webdeveloper@gmail.com",
         'user_email_verify_token' => sha1(uniqid('james.mchugh.webdeveloper@gmail.com', true) . strtotime("now")),
         'user_email_verified_at' => date("Y-m-d H:i:s"),
-        'user_password' => "letmein123",
+        'user_password' => Hash::make("letmein123"),
         'user_first_name' => "Superuser",
         'user_surname' => "Admin",
         'user_status'=> "2",
