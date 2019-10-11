@@ -26,7 +26,7 @@ class CreatePlacesTable extends Migration
             $table->string('place_address_postcode');
             $table->string('place_location_lat');
             $table->string('place_location_lng');
-            $table->integer('place_status');
+            $table->integer('place_status')->default("1");
             $table->dateTime('place_date_last_updated')->nullable();
             $table->dateTime('place_date_created')->useCurrent();
             $table->dateTime('place_date_deleted')->nullable();
