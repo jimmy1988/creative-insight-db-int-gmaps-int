@@ -15,15 +15,15 @@
 /*
 *   FRONTEND AUTHENTICATION ROUTES
 */
-Route::get("/login", "\App\Http\Controllers\Auth\Frontend\FrontendLoginController@showLoginForm")->name("frontend.login.showLoginForm");
-Route::post("/login", "\App\Http\Controllers\Auth\Frontend\FrontendLoginController@login")->name("frontend.login");
-Route::post("/logout", "\App\Http\Controllers\Auth\Frontend\FrontendLoginController@logout")->name("frontend.logout");
-Route::post("/password/email", "\App\Http\Controllers\Auth\Frontend\FrontendForgotPasswordController@sendResetLinkEmail")->name("frontend.password.email");
-Route::get("/password/reset", "\App\Http\Controllers\Auth\Frontend\FrontendForgotPasswordController@showLinkRequestForm")->name("frontend.password.request");
-Route::post("/password/reset", "\App\Http\Controllers\Auth\Frontend\FrontendResetPasswordController@reset")->name("frontend.password.update");
-Route::get("/password/reset/{token}", "\App\Http\Controllers\Auth\Frontend\FrontendResetPasswordController@showResetForm")->name("frontend.password.reset");
-Route::get("/register", "\App\Http\Controllers\Auth\Frontend\FrontendRegisterController@showRegistrationForm")->name("frontend.register.showRegistrationForm");
-Route::post("/register", "\App\Http\Controllers\Auth\Frontend\FrontendRegisterController@register")->name("frontend.register");
+// Route::get("/login", "\App\Http\Controllers\Auth\Frontend\FrontendLoginController@showLoginForm")->name("frontend.login.showLoginForm");
+// Route::post("/login", "\App\Http\Controllers\Auth\Frontend\FrontendLoginController@login")->name("frontend.login");
+// Route::post("/logout", "\App\Http\Controllers\Auth\Frontend\FrontendLoginController@logout")->name("frontend.logout");
+// Route::post("/password/email", "\App\Http\Controllers\Auth\Frontend\FrontendForgotPasswordController@sendResetLinkEmail")->name("frontend.password.email");
+// Route::get("/password/reset", "\App\Http\Controllers\Auth\Frontend\FrontendForgotPasswordController@showLinkRequestForm")->name("frontend.password.request");
+// Route::post("/password/reset", "\App\Http\Controllers\Auth\Frontend\FrontendResetPasswordController@reset")->name("frontend.password.update");
+// Route::get("/password/reset/{token}", "\App\Http\Controllers\Auth\Frontend\FrontendResetPasswordController@showResetForm")->name("frontend.password.reset");
+// Route::get("/register", "\App\Http\Controllers\Auth\Frontend\FrontendRegisterController@showRegistrationForm")->name("frontend.register.showRegistrationForm");
+// Route::post("/register", "\App\Http\Controllers\Auth\Frontend\FrontendRegisterController@register")->name("frontend.register");
 
 /*
 *   FRONTEND ROUTES
