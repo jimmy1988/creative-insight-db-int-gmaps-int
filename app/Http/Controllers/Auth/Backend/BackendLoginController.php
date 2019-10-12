@@ -41,14 +41,18 @@ class BackendLoginController extends Controller
 
     //Overrides
     public function showLoginForm(){
-      return "hello from backend show login";
+      $data = array(
+
+      );
+
+      return view("backend.pages.auth.login")->with($data);
     }
 
     public function login(Request $request){
-
+      return "logged in";
     }
 
     public function logout(Request $request){
-
+      return "logged out";
     }
 }
