@@ -1,15 +1,17 @@
-@include('frontend.includes.top.php-cache-control')
+@include('backend.includes.top.php-cache-control')
 
-@include('frontend.layouts.top')
+@include('backend.layouts.top')
 
-@include('frontend.layouts.header')
+@include('backend.layouts.header')
+
+@include('backend.layouts.sidebar')
 
 <div class="main-content">
   @yield('content')
 </div>
 
-@include('frontend.layouts.footer')
+@include('backend.layouts.footer')
 
-@include('frontend.layouts.scripts')
+@include('backend.layouts.scripts')
 
-@include('frontend.layouts.bottom')
+@include('backend.layouts.bottom')
