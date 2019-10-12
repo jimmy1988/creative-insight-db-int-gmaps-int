@@ -59,4 +59,8 @@ class AdminUsers extends Authenticatable
    'date_password_last_updated' => "datetime",
    'user_status' => "integer"
  ];
+
+ public function userStatus(){
+   return $this->hasOne('App\UserStatus', 'user_status_id', 'user_status');
+ }
 }
