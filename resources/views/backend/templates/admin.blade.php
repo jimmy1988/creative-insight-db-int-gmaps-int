@@ -6,8 +6,13 @@
 
 @include('backend.layouts.sidebar')
 
-<div class="main-content">
-  @yield('content')
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  @include('backend.layouts.titlebar')
+  @include('backend.includes.template-messages')
+  <div class="main-content">
+        @yield('content')
+  </div>
 </div>
 
 @include('backend.layouts.footer')
