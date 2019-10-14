@@ -1,4 +1,4 @@
-@include('backend.includes.top.php-cache-control')
+@include('backend.includes.top-php-cache-control')
 
 @include('backend.layouts.top')
 
