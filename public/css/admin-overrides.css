@@ -50,3 +50,33 @@
   width:30px;
   text-align: center;
 }
+
+.auth-logo{
+  width:100%;
+}
+
+.card-header{
+  background: #636363;
+  color:#FFF;
+}
+
+.login-logo {
+    width: 50px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.auth-card {
+    margin: 50px 0;
+}
+
+.login-box{
+  margin:0;
+  width:100%;
+}
+
+.auth-title {
+    margin: 0 0 25px 0;
+    font-weight: 800;
+    font-size: 22px;
+}
