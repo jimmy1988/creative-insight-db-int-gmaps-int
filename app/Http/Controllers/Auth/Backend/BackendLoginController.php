@@ -55,6 +55,8 @@ class BackendLoginController extends Controller
     }
 
     public function logout(Request $request){
+      print_r($reuest->all());
+      echo "<br /><br />";
       return "logged out";
     }
 }
