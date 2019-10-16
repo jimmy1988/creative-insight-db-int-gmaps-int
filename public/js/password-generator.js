@@ -10,6 +10,7 @@ function randomPassword(length = 10) {
 
 $(document).ready(function(){
   $(".generate-password-button").on("click", function(){
+    event.preventDefault();
     $("#user_password, #user_password_confirm").val(randomPassword());
     $("#user_password, #user_password_confirm").attr("type", "text");
     $("#user_password").parent().children(".toggle-password").toggleClass("fa-eye-slash fa-eye");
