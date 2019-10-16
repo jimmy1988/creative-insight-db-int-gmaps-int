@@ -80,3 +80,19 @@
     font-weight: 800;
     font-size: 22px;
 }
+
+.form-checkbox{
+  padding-left: 6px;
+}
+
+.auth-container{
+  width: 50%;
+  margin: 0 auto;
+  display: block;
+  flex: unset;
+  float: none;
+}
+
+.auth-box-body{
+  padding-bottom:25px;
+}
