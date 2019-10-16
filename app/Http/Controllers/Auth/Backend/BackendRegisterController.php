@@ -81,6 +81,8 @@ class BackendRegisterController extends Controller
     }
 
     public function register(Request $request){
-
+      print_r($reuest->all());
+      echo "<br /><br />";
+      return "new user registered";
     }
 }
