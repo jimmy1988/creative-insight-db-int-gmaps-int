@@ -2,7 +2,7 @@
 <html>
   <head>
 
-    <title>AdminLTE 2 | Fixed Layout</title>
+    <title>@if (isset($pageTitle) && !empty($pageTitle)) {{$pageTitle . " - "}} @endif @if (env('APP_NAME')) {{env('APP_NAME')}} @else {{"Creative Insight Developer Test" }} @endif Admin</title>
 
     @include('backend.includes.top-meta-tags')
 
