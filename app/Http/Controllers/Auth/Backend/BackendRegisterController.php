@@ -74,7 +74,10 @@ class BackendRegisterController extends Controller
     //Overrides
 
     public function showRegistrationForm(){
-
+      $data = array(
+        "pageTitle" => "Register New User"
+      );
+      return view('backend.pages.auth.register')->with($data);
     }
 
     public function register(Request $request){
