@@ -14,7 +14,8 @@ class UserStatusSeeder extends Seeder
 
       DB::table('user_status')->insert([
         ['user_status'=> "Awaiting Verification"],
-        ['user_status'=> "Active"],
+        ['user_status'=> "Active - Logged Out"],
+        ['user_status'=> "Active - Logged In"],
         ['user_status'=> "Banned"],
         ['user_status'=> "Deleted"]
       ]);
