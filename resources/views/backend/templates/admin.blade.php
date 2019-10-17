@@ -8,8 +8,8 @@
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
-  
-  <div class="main-content">
+
+  <div class="main-content admin-content">
         @yield('content')
   </div>
 </div>
