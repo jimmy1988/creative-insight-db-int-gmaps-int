@@ -25,7 +25,7 @@
             <div class="card-body">
               <div class="login-box">
                 <div class="login-box-body">
-                  <h4 class="text-center auth-title">@if (isset($pagetitle) && !empty($pageTitle)) {{ $pageTitle }} @else {{ "Reset Password" }} @endif</h4>
+                  <h4 class="text-center auth-title">@if (isset($pageTitle) && !empty($pageTitle)) {{ $pageTitle }} @else {{ "Reset Password" }} @endif</h4>
                   <div class="form-group has-feedback">
                       <div class="col-xs-10 no-gutters">
                         <input type="password" class="form-control" id="user_password" name="user_password" placeholder="Password" required>

@@ -8,7 +8,7 @@
       <div class="col-xs-12 auth-container">
 
         <div class="card auth-card">
-          <form action="{{route('admin.register')}}" method="post">
+          <form action="{{route('admin.user.add')}}" method="post">
             @csrf
             <div class="card-header text-center">
               <div class="login-logo">
@@ -20,7 +20,7 @@
             <div class="card-body auth-body">
               <div class="login-box auth-box">
                 <div class="login-box-body auth-box-body">
-                  <h4 class="text-center auth-title">Register</h4>
+                  <h4 class="text-center auth-title">@if (isset($pageTitle) && !empty($pageTitle)) {{ $pageTitle }} @else {{ "Register" }} @endif</h4>
                   <div class="form-group has-feedback">
                     <input type="text" class="form-control" placeholder="First Name" name="user_first_name" id="user_first_name" required>
                     <span class="glyphicon form-control-feedback"><i class="fas fa-user"></i></span>

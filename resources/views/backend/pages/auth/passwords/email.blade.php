@@ -22,7 +22,7 @@
             <div class="card-body">
               <div class="login-box">
                 <div class="login-box-body">
-                  <h4 class="text-center auth-title">@if (isset($pagetitle) && !empty($pageTitle)) {{ $pageTitle }} @else {{ "Request New Password" }} @endif</h4>
+                  <h4 class="text-center auth-title">@if (isset($pageTitle) && !empty($pageTitle)) {{ $pageTitle }} @else {{ "Request New Password" }} @endif</h4>
                   <div class="form-group has-feedback">
                     <input type="email" class="form-control" placeholder="Email" name="user_email" id="user_email" value="@if (session('user_email') != null && !empty(session('user_email'))) {{ session('user_email') }} @endif" required>
                     <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
