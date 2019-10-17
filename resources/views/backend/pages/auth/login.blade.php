@@ -23,7 +23,7 @@
             <div class="card-body">
               <div class="login-box">
                 <div class="login-box-body">
-                  <h4 class="text-center auth-title">Login</h4>
+                  <h4 class="text-center auth-title">@if (isset($pagetitle) && !empty($pageTitle)) {{ $pageTitle }} @else {{ "Login" }} @endif</h4>
                   <div class="form-group has-feedback">
                     <input type="email" class="form-control" placeholder="Email" name="user_email" id="user_email" value="@if (session('user_email') != null && !empty(session('user_email'))) {{ session('user_email') }} @endif" required>
                     <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
@@ -44,6 +44,15 @@
                           <input type="checkbox" id="remember_me" name="remember_me"> Remember Me
                         </label>
                       </div>
+                    </div>
+                    <div class="col-xs-4 text-right">
+                      &nbsp;
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-xs-8 no-gutters">
+                      <a href="{{route('admin.password.request')}}" class="btn btn-success">Reset Password</a>
                     </div>
                     <div class="col-xs-4">
                       &nbsp;
