@@ -2,8 +2,6 @@
 
 @section('content')
 
-  @include('backend.includes.template-messages')
-
   <div class="container-fluid">
     <div class="row">
       <div class="col-xs-2 col-sm-4">
@@ -11,6 +9,7 @@
       </div>
       <div class="col-xs-8 col-sm-4">
 
+        @include('backend.includes.template-messages')
         <div class="card auth-card">
           <form action="{{route('admin.login')}}" method="post">
             @csrf
@@ -26,7 +25,7 @@
                 <div class="login-box-body">
                   <h4 class="text-center auth-title">Login</h4>
                   <div class="form-group has-feedback">
-                    <input type="email" class="form-control" placeholder="Email" name="user_email" id="user_email" required>
+                    <input type="email" class="form-control" placeholder="Email" name="user_email" id="user_email" value="@if (session('user_email') != null && !empty(session('user_email'))) {{ session('user_email') }} @endif" required>
                     <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                   </div>
                   <div class="form-group has-feedback">
