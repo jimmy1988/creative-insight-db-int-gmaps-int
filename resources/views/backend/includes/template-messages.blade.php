@@ -1,5 +1,5 @@
 @if ($errors->any() )
-  <div class="row">
+  <div class="row auth-messages">
     <div class="col-xs-12">
       <div id="register-messages" class="alert-box">
           <div class="alert alert-danger alert-box" id="register-errors">
@@ -17,7 +17,7 @@
 @if (session('messages') != null && !empty(session('messages')))
   <?php $messages = session('messages'); ?>
 
-  <div class="row">
+  <div class="row auth-messages">
     <div class="col-xs-12">
       <div id="all-messages" class="alert-box">
         @if ($messages['errors'] != null && !empty($messages['errors']) && is_array($messages['errors']) && count($messages['errors']) > 0)
