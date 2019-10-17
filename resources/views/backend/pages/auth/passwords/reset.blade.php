@@ -1,65 +1,65 @@
-@extends('layouts.app')
+@extends('backend.templates.auth')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Reset Password') }}</div>
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('password.update') }}">
-                        @csrf
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xs-2 col-sm-4">
+        &nbsp;
+      </div>
+      <div class="col-xs-8 col-sm-4">
 
-                        <input type="hidden" name="token" value="{{ $token }}">
-
-                        <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ $email ?? old('email') }}" required autocomplete="email" autofocus>
-
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Reset Password') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+        @include('backend.includes.template-messages')
+        <div class="card auth-card">
+          <form action="{{route('admin.password.update')}}" method="post">
+            @csrf
+            <input type="hidden" name="user_id" value="{{$user_id_hash}}"/>
+            <input type="hidden" name="password_reset_token" value="{{$password_reset_token}}"/>
+            <div class="card-header text-center">
+              <div class="login-logo">
+                <a href="/">
+                  <img alt="Project Logo" src="/images/logo.png" class="auth-logo"/>
+                </a>
+              </div>
             </div>
-        </div>
+            <div class="card-body">
+              <div class="login-box">
+                <div class="login-box-body">
+                  <h4 class="text-center auth-title">@if (isset($pagetitle) && !empty($pageTitle)) {{ $pageTitle }} @else {{ "Reset Password" }} @endif</h4>
+                  <div class="form-group has-feedback">
+                      <div class="col-xs-10 no-gutters">
+                        <input type="password" class="form-control" id="user_password" name="user_password" placeholder="Password" required>
+                        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                      </div>
+                      <div class="col-xs-2 text-right no-gutters">
+                        <a href="#" toggle="#user_password" class="btn btn-success show-password toggle-password"><i class="fas fa-eye"></i></a>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-xs-8 back-login-custom">
+                      <a href="{{route('admin.login')}}" class="btn btn-success">Back to Login</a>
+                    </div>
+                    <div class="col-xs-4">
+                      &nbsp;
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+                </div>
+                <!-- /.login-box-body -->
+              </div>
+              <!-- /.login-box -->
+            </div>
+            <div class="card-footer text-right">
+              <button type="submit" class="btn btn-primary btn-block btn-flat">Reset Password</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="col-xs-2 col-sm-4">
+        &nbsp;
+      </div>
     </div>
-</div>
+  </div>
+
+  @include('backend.includes.auth-password-reveal')
 @endsection

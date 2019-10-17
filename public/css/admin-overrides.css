@@ -100,3 +100,8 @@
 .auth-messages{
   margin-top:25px
 }
+
+.back-login-custom {
+    margin-top: 15px;
+    padding-left: 0;
+}
