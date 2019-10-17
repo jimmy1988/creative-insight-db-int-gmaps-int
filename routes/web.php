@@ -43,7 +43,7 @@ Route::post("/admin/logout", "\App\Http\Controllers\Auth\Backend\BackendLoginCon
 Route::post("/admin/password/email", "\App\Http\Controllers\Auth\Backend\BackendForgotPasswordController@sendResetLinkEmail")->name("admin.password.email");
 Route::get("/admin/password/reset", "\App\Http\Controllers\Auth\Backend\BackendForgotPasswordController@showLinkRequestForm")->name("admin.password.request");
 Route::post("/admin/password/reset", "\App\Http\Controllers\Auth\Backend\BackendResetPasswordController@reset")->name("admin.password.update");
-Route::get("/admin/password/reset/{token}", "\App\Http\Controllers\Auth\Backend\BackendResetPasswordController@showResetForm")->name("admin.password.reset");
+Route::get("/admin/password/reset/{user}/{token}", "\App\Http\Controllers\Auth\Backend\BackendResetPasswordController@showResetForm")->name("admin.password.reset");
 Route::get("/admin/register", "\App\Http\Controllers\Auth\Backend\BackendRegisterController@showRegistrationForm")->name("admin.register.showRegistrationForm");
 Route::post("/admin/register", "\App\Http\Controllers\Auth\Backend\BackendRegisterController@register")->name("admin.register");
 
