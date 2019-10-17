@@ -30,10 +30,6 @@
 */
 Route::get('/', "FrontendPagesController@index")->name('index');
 
-
-
-
-
 /*
 *   BACKEND AUTHENTICATION ROUTES
 */
@@ -44,11 +40,25 @@ Route::post("/admin/password/email", "\App\Http\Controllers\Auth\Backend\Backend
 Route::get("/admin/password/reset", "\App\Http\Controllers\Auth\Backend\BackendForgotPasswordController@showLinkRequestForm")->name("admin.password.request");
 Route::post("/admin/password/reset", "\App\Http\Controllers\Auth\Backend\BackendResetPasswordController@reset")->name("admin.password.update");
 Route::get("/admin/password/reset/{user}/{token}", "\App\Http\Controllers\Auth\Backend\BackendResetPasswordController@showResetForm")->name("admin.password.reset");
-Route::get("/admin/register", "\App\Http\Controllers\Auth\Backend\BackendRegisterController@showRegistrationForm")->name("admin.register.showRegistrationForm");
-Route::post("/admin/register", "\App\Http\Controllers\Auth\Backend\BackendRegisterController@register")->name("admin.register");
-
 
 /*
 *   BACKEND ROUTES
 */
+
 Route::get('/admin', "AdminPagesController@index")->name('admin.index');
+
+Route::get('/admin/users', "AdminPagesController@allUsers")->name('admin.users');
+Route::get('/admin/user/add', "\App\Http\Controllers\Auth\Backend\BackendRegisterController@showRegistrationForm")->name('admin.user.add.showForm');
+Route::post('/admin/user/add', "\App\Http\Controllers\Auth\Backend\BackendRegisterController@register")->name('admin.user.add');
+Route::get('/admin/user/edit/{user}', "AdminPagesController@showEditUserForm")->name('admin.user.edit.showForm');
+Route::post('/admin/user/edit', "AdminPagesController@updateUser")->name('admin.user.update');
+Route::delete('/admin/user/delete/soft/{user}', "AdminPagesController@deleteUser")->name('admin.user.delete.soft');
+Route::delete('/admin/user/delete/hard/{user}', "AdminPagesController@deleteUser")->name('admin.user.delete.hard');
+
+Route::get('/admin/places', "AdminPagesController@allPlaces")->name('admin.places');
+Route::get('/admin/place/add', "AdminPagesController@showAddPlaceForm")->name('admin.place.add.showForm');
+Route::post('/admin/place/add', "AdminPagesController@createPlace")->name('admin.place.add');
+Route::get('/admin/place/edit/{place}', "AdminPagesController@showEditPlaceForm")->name('admin.place.edit.showForm');
+Route::post('/admin/place/edit', "AdminPagesController@updatePlace")->name('admin.place.update');
+Route::delete('/admin/place/delete/soft/{place}', "AdminPagesController@deletePlace")->name('admin.place.delete.soft');
+Route::delete('/admin/place/delete/hard/{place}', "AdminPagesController@deletePlace")->name('admin.place.delete.hard');
