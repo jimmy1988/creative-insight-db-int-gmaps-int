@@ -40,6 +40,7 @@ Route::post("/admin/password/email", "\App\Http\Controllers\Auth\Backend\Backend
 Route::get("/admin/password/reset", "\App\Http\Controllers\Auth\Backend\BackendForgotPasswordController@showLinkRequestForm")->name("admin.password.request");
 Route::post("/admin/password/reset", "\App\Http\Controllers\Auth\Backend\BackendResetPasswordController@reset")->name("admin.password.update");
 Route::get("/admin/password/reset/{user}/{token}", "\App\Http\Controllers\Auth\Backend\BackendResetPasswordController@showResetForm")->name("admin.password.reset");
+Route::get("/admin/email/verify/{user}/{token}", "\App\Http\Controllers\Auth\Backend\BackendVerificationController@verifyUser")->name("admin.email.verify");
 
 /*
 *   BACKEND ROUTES
