@@ -40,7 +40,6 @@ class AdminUsers extends Authenticatable
   * @var array
   */
  protected $hidden = [
-   'user_email_verify_token',
    'user_password',
    'password_reset_token',
    'remember_token'
