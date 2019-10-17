@@ -109,3 +109,14 @@
 .admin-content{
   margin-top:15px !important;
 }
+
+.text-black{
+    color: #000;
+    font-weight: 800;
+    text-align: left !important;
+}
+
+.text-black:hover{
+    color: #FFF !important;
+    font-weight: 800;
+}
