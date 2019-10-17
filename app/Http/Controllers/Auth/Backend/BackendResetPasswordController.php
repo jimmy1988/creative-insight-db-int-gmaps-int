@@ -73,7 +73,7 @@ class BackendResetPasswordController extends Controller
       }else{
         $data = array(
           "messages" => array(
-            "success" => array("Password changed successfully"),
+            "success" => array(),
             "errors" => array("No user found with those credentials, password was not changed")
           )
         );

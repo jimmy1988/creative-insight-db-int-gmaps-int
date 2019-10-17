@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Auth\Backend;
 
-use App\User;
+use App\AdminUsers;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\Auth;
 
 class BackendRegisterController extends Controller
 {
@@ -38,7 +39,7 @@ class BackendRegisterController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+        $this->middleware('auth');
     }
 
     /**
@@ -47,14 +48,6 @@ class BackendRegisterController extends Controller
      * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    // protected function validator(array $data)
-    // {
-    //     return Validator::make($data, [
-    //         'name' => ['required', 'string', 'max:255'],
-    //         'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-    //         'password' => ['required', 'string', 'min:8', 'confirmed'],
-    //     ]);
-    // }
 
     /**
      * Create a new user instance after a valid registration.
@@ -62,27 +55,63 @@ class BackendRegisterController extends Controller
      * @param  array  $data
      * @return \App\User
      */
-    // protected function create(array $data)
-    // {
-    //     return User::create([
-    //         'name' => $data['name'],
-    //         'email' => $data['email'],
-    //         'password' => Hash::make($data['password']),
-    //     ]);
-    // }
-
     //Overrides
 
     public function showRegistrationForm(){
+      $thisUser = parent::currentUserDetails();
       $data = array(
-        "pageTitle" => "Register New User"
+        "pageTitle" => "Register New User",
+        "thisUser" => $thisUser
       );
       return view('backend.pages.auth.register')->with($data);
     }
 
     public function register(Request $request){
-      print_r($reuest->all());
-      echo "<br /><br />";
-      return "new user registered";
+
+      $messages = array(
+        'user_first_name.required' => "Fill in your first name",
+        'user_surname.required' => "Fill in your surname",
+        'user_email.user_gender' => "Email Address already exists",
+        'user_email.required' => "Please fill in your email address",
+        'user_password.required' => "Please provide a password",
+        'user_password_confirm.required' => "Please confirm your password",
+        'user_password_confirm.same:user_password' => "The passwords does not match",
+      );
+
+      $rules = array(
+        'user_first_name' => "required|max:255",
+        'user_surname' => "required|max:255",
+        'user_email' => 'required|email|unique:admin_users,user_email',
+        'user_password' => 'required|same:user_password_confirm',
+        'user_password_confirm' => 'required|same:user_password',
+      );
+
+      $validatedData = $request->validate($rules, $messages);
+
+      $requestData = $request->all();
+
+      $userEmailVerificationToken = sha1(uniqid($requestData['user_email'], true) . strtotime("now"));
+      $userIDHash = sha1(uniqid($requestData['user_surname']).strtotime("now"));
+
+      $user =  AdminUsers::create([
+           'user_id_hash' => $userIDHash,
+           'user_email' => $requestData['user_email'],
+           'user_email_verify_token' => $userEmailVerificationToken,
+           'user_password' => Hash::make($requestData['user_password']),
+           'user_first_name' => $requestData['user_first_name'],
+           'user_surname' => $requestData['user_surname'],
+           'user_status' => '1',
+       ]);
+
+       \Mail::to($user->user_email)->send(new \App\Mail\Admin\sendEmails($user, "backend.emails.verifyEmail", "Cative Insight Developer Test Admin: Email Verification Required"));
+
+       $data = array(
+         "messages" => array(
+           "success" => array("User Created Successfully, Pleasee ask them to check their emails for an email to verify their account"),
+           "errors" => array()
+         )
+       );
+
+       return redirect()->route('admin.index')->with($data);
     }
 }
