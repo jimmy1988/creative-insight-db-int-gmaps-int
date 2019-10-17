@@ -14,7 +14,7 @@
       <li class="dropdown user user-menu">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
           <img src="/images/user-placeholder.png" class="user-image" alt="User Image">
-          <span class="hidden-xs">Alexander Pierce</span>
+          <span class="hidden-xs">{{$thisUser['user_first_name'] . " " . $thisUser['user_surname']}}</span>
         </a>
         <ul class="dropdown-menu">
           <!-- User image -->
@@ -28,7 +28,11 @@
               <a href="#" class="btn btn-default btn-flat">Profile</a>
             </div> --}}
             <div class="pull-right">
-              <a href="{{route('admin.logout')}}" class="btn btn-success btn-flat">Log Out</a>
+              <form action="{{route('admin.logout')}}" method="post">
+                @csrf
+                <button type="submit" name="submit" value="log_out" class="btn btn-success btn-flat">Log Out</a>
+              </form>
+
             </div>
           </li>
         </ul>
