@@ -55,11 +55,13 @@ Route::get('/admin/user/edit/{user}', "AdminPagesController@showEditUserForm")->
 Route::post('/admin/user/edit', "AdminPagesController@updateUser")->name('admin.user.update');
 Route::delete('/admin/user/delete/soft/{user}', "AdminPagesController@deleteUser")->name('admin.user.delete.soft');
 Route::delete('/admin/user/delete/hard/{user}', "AdminPagesController@deleteUser")->name('admin.user.delete.hard');
+Route::get('/admin/users/deleted', "AdminPagesController@deletedUsers")->name('admin.users.deleted');
 
 Route::get('/admin/places', "AdminPagesController@allPlaces")->name('admin.places');
 Route::get('/admin/place/add', "AdminPagesController@showAddPlaceForm")->name('admin.place.add.showForm');
 Route::post('/admin/place/add', "AdminPagesController@createPlace")->name('admin.place.add');
 Route::get('/admin/place/edit/{place}', "AdminPagesController@showEditPlaceForm")->name('admin.place.edit.showForm');
 Route::post('/admin/place/edit', "AdminPagesController@updatePlace")->name('admin.place.update');
+Route::get('/admin/places/deleted', "AdminPagesController@deletedPlaces")->name('admin.places.deleted');
 Route::delete('/admin/place/delete/soft/{place}', "AdminPagesController@deletePlace")->name('admin.place.delete.soft');
 Route::delete('/admin/place/delete/hard/{place}', "AdminPagesController@deletePlace")->name('admin.place.delete.hard');
