@@ -24,9 +24,9 @@
 
           <!-- Menu Footer-->
           <li class="user-footer">
-            {{-- <div class="pull-left">
-              <a href="#" class="btn btn-default btn-flat">Profile</a>
-            </div> --}}
+            <div class="pull-left">
+              <a href="{{route('admin.user.profile')}}" class="btn btn-info btn-flat">Profile</a>
+            </div>
             <div class="pull-right">
               <form action="{{route('admin.logout')}}" method="post">
                 @csrf
