@@ -71,8 +71,9 @@ class BackendRegisterController extends Controller
       $messages = array(
         'user_first_name.required' => "Fill in your first name",
         'user_surname.required' => "Fill in your surname",
-        'user_email.user_gender' => "Email Address already exists",
+        'user_email.unique' => "Email Address already exists",
         'user_email.required' => "Please fill in your email address",
+        'user_email.email' => "Email Address is not in a valid format",
         'user_password.required' => "Please provide a password",
         'user_password_confirm.required' => "Please confirm your password",
         'user_password_confirm.same:user_password' => "The passwords does not match",
