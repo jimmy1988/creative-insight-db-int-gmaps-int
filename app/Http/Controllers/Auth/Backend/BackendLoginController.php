@@ -186,7 +186,7 @@ class BackendLoginController extends Controller
       }
     }
 
-    public function logout(Request $request){
+    public static function logout(Request $request){
       $user_id = Auth::id();
       $thisAdminUser = AdminUsers::where('user_id', $user_id)->first();
       if(!empty($thisAdminUser) && $thisAdminUser->count() > 0){
