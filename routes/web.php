@@ -49,6 +49,7 @@ Route::get("/admin/email/verify/{user}/{token}", "\App\Http\Controllers\Auth\Bac
 Route::get('/admin', "AdminPagesController@index")->name('admin.index');
 
 Route::get('/admin/users', "AdminPagesController@allUsers")->name('admin.users');
+Route::get('/admin/user/profile', "AdminPagesController@userProfile")->name('admin.user.profile');
 Route::get('/admin/user/add', "\App\Http\Controllers\Auth\Backend\BackendRegisterController@showRegistrationForm")->name('admin.user.add.showForm');
 Route::post('/admin/user/add', "\App\Http\Controllers\Auth\Backend\BackendRegisterController@register")->name('admin.user.add');
 Route::get('/admin/user/edit/{user}', "AdminPagesController@showEditUserForm")->name('admin.user.edit.showForm');
