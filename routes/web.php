@@ -35,7 +35,7 @@ Route::get('/', "FrontendPagesController@index")->name('index');
 */
 Route::get("/admin/login", "\App\Http\Controllers\Auth\Backend\BackendLoginController@showLoginForm")->name("admin.login.showLoginForm");
 Route::post("/admin/login", "\App\Http\Controllers\Auth\Backend\BackendLoginController@login")->name("admin.login");
-Route::post("/admin/logout", "\App\Http\Controllers\Auth\Backend\BackendLoginController@logout")->name("admin.logout");
+Route::match(['post', 'get'],"/admin/logout", "\App\Http\Controllers\Auth\Backend\BackendLoginController@logout")->name("admin.logout");
 Route::post("/admin/password/email", "\App\Http\Controllers\Auth\Backend\BackendForgotPasswordController@sendResetLinkEmail")->name("admin.password.email");
 Route::get("/admin/password/reset", "\App\Http\Controllers\Auth\Backend\BackendForgotPasswordController@showLinkRequestForm")->name("admin.password.request");
 Route::post("/admin/password/reset", "\App\Http\Controllers\Auth\Backend\BackendResetPasswordController@reset")->name("admin.password.update");
@@ -54,8 +54,7 @@ Route::get('/admin/user/add', "\App\Http\Controllers\Auth\Backend\BackendRegiste
 Route::post('/admin/user/add', "\App\Http\Controllers\Auth\Backend\BackendRegisterController@register")->name('admin.user.add');
 Route::get('/admin/user/edit/{user}', "AdminPagesController@showEditUserForm")->name('admin.user.edit.showForm');
 Route::post('/admin/user/edit', "AdminPagesController@updateUser")->name('admin.user.update');
-Route::delete('/admin/user/delete/soft/{user}', "AdminPagesController@deleteUser")->name('admin.user.delete.soft');
-Route::delete('/admin/user/delete/hard/{user}', "AdminPagesController@deleteUser")->name('admin.user.delete.hard');
+Route::delete('/admin/user/delete/{method}/{user}', "AdminPagesController@deleteUser")->name('admin.user.delete');
 Route::get('/admin/users/deleted', "AdminPagesController@deletedUsers")->name('admin.users.deleted');
 
 Route::get('/admin/places', "AdminPagesController@allPlaces")->name('admin.places');
@@ -64,5 +63,4 @@ Route::post('/admin/place/add', "AdminPagesController@createPlace")->name('admin
 Route::get('/admin/place/edit/{place}', "AdminPagesController@showEditPlaceForm")->name('admin.place.edit.showForm');
 Route::post('/admin/place/edit', "AdminPagesController@updatePlace")->name('admin.place.update');
 Route::get('/admin/places/deleted', "AdminPagesController@deletedPlaces")->name('admin.places.deleted');
-Route::delete('/admin/place/delete/soft/{place}', "AdminPagesController@deletePlace")->name('admin.place.delete.soft');
-Route::delete('/admin/place/delete/hard/{place}', "AdminPagesController@deletePlace")->name('admin.place.delete.hard');
+Route::delete('/admin/place/delete/{method}/{place}', "AdminPagesController@deletePlace")->name('admin.place.delete');
