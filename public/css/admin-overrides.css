@@ -124,3 +124,7 @@
 .delete-form{
   display: inline-block;
 }
+
+.custom-form-control{
+  margin-top:15px;
+}
