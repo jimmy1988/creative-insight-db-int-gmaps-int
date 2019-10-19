@@ -60,6 +60,20 @@
                       </div>
                   </div>
                   <div class="clearfix"></div>
+                  @if (isset($userStatuses) && !empty($userStatuses) && $userStatuses->count() > 0)
+                    <div class="form-group has-feedback custom-form-control">
+                        <select class="form-control" name="user_status">
+                          @foreach ($userStatuses as $userStatus => $status)
+                            <option value="{{$status->user_status_id}}"
+                            @if ($status->user_status_id == $userToEdit['user_status'])
+                              {{ "selected" }}
+                            @endif
+                            >{{$status->user_status}}</option>
+                          @endforeach
+                        </select>
+                    </div>
+                  @endif
+
                 </div>
                 <!-- /.login-box-body -->
               </div>
