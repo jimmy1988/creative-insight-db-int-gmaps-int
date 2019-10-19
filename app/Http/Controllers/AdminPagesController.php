@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\AdminUsers;
+use App\UserStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -66,15 +67,18 @@ class AdminPagesController extends Controller
     }
 
     public function showEditUserForm(Request $request, $userIDHash = null){
+
       if(isset($userIDHash) && !empty($userIDHash)){
         $userToEdit = AdminUsers::where('user_id_hash', $userIDHash)->first();
         if(!empty($userToEdit) && $userToEdit->count() > 0 && $userToEdit->user_id != Auth::guard('admin')->id()){
           $thisUser = parent::currentUserDetails();
+          $userStatuses = UserStatus::all();
 
           $data = array(
             "pageTitle" => "Edit User",
             "thisUser" => $thisUser,
-            "userToEdit" => $userToEdit->toArray()
+            "userToEdit" => $userToEdit->toArray(),
+            "userStatuses" => $userStatuses
           );
 
           return view("backend.pages.edit-user")->with($data);
@@ -152,6 +156,15 @@ class AdminPagesController extends Controller
             $userToEdit->user_password = Hash::make($request->user_password);
           }
 
+          if(isset($request->user_status) && !empty($request->user_status)){
+            if($request->user_status == "5"){
+              $userToEdit->user_date_deleted = date("Y-m-d H:i:s");
+            }else{
+              $userToEdit->user_date_deleted = null;
+            }
+            $userToEdit->user_status = $request->user_status;
+          }
+
 
           $userToEdit->save();
 
@@ -181,12 +194,74 @@ class AdminPagesController extends Controller
       }
     }
 
-    public function deleteUser($method = null, $userIDHash = null){
+    public function deleteUser(Request $request, $deleteMethod = null, $userIDHash = null){
+      if(isset($userIDHash) && !empty($userIDHash)){
 
+        if(isset($deleteMethod) && !empty($deleteMethod)){
+          $userToDelete = AdminUsers::where('user_id_hash', $userIDHash)->first();
+
+          if(strtolower($deleteMethod) == "soft"){
+            $userToDelete->user_status = "5";
+            $userToDelete->user_date_deleted = date("Y-m-d H:i:s");
+            $userToDelete->save();
+
+            $data = array(
+              "messages" => array(
+                "success" => array("User deleted successfully"),
+                "errors" => array()
+              )
+            );
+            return redirect()->route('admin.users')->with($data);
+          }elseif(strtolower($deleteMethod) == "hard"){
+            $userToDelete->delete();
+
+            $data = array(
+              "messages" => array(
+                "success" => array("User deleted successfully"),
+                "errors" => array()
+              )
+            );
+            return redirect()->route('admin.users.deleted')->with($data);
+          }else{
+            $data = array(
+              "messages" => array(
+                "success" => array(),
+                "errors" => array("An invalid delete method was supplied, please try again")
+              )
+            );
+            return redirect()->route('admin.users')->with($data);
+          }
+        }else{
+          $data = array(
+            "messages" => array(
+              "success" => array(),
+              "errors" => array("A delete method was not specified, please try again")
+            )
+          );
+          return redirect()->route('admin.users')->with($data);
+        }
+
+      }else{
+        $data = array(
+          "messages" => array(
+            "success" => array(),
+            "errors" => array("No user details found with those credentails, please try again")
+          )
+        );
+        return redirect()->route('admin.users')->with($data);
+      }
     }
 
     public function deletedUsers(){
+      $deletedUsers = AdminUsers::where('user_status', "5")->orderBy('user_id', 'ASC')->get();
 
+      $data = array(
+        "pageTitle" => "Deleted Users",
+        "thisUser" => parent::currentUserDetails(),
+        "deletedUsers" => $deletedUsers
+      );
+
+      return view('backend.pages.deleted-users')->with($data);
     }
 
 
