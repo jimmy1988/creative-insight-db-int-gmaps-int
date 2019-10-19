@@ -61,7 +61,7 @@
                     <td>{{ $details->user_first_name . " " .  $details->user_surname }}</td>
                     <td>{{ $details->user_email }}</td>
                     <td>{!! $userStatusIcon !!}</td>
-                    <td>Date Created</td>
+                    <td>{{ date("d-m-Y H:i:s", strtotime($details->user_date_created)) }}</td>
                     <td>
                       @if ($thisUser['user_id'] == $details->user_id)
                         <a href="{{ route('admin.user.profile', $details->user_id_hash) }}" class="btn btn-success btn-edit-custom">
@@ -71,8 +71,8 @@
                         <a href="{{ route('admin.user.edit.showForm', $details->user_id_hash) }}" class="btn btn-success btn-edit-custom">
                           <i class="fas fa-user-edit"></i>
                         </a>
-                        @if (isset($thisUser['user_allow_delete']) && !empty($thisUser['user_allow_delete']) && strtolower($thisUser['user_allow_delete']) != 'yes')
-                          <form action="{{route('admin.user.delete.soft', $details->user_id_hash)}}" method="post" class="delete-form">
+                        @if (isset($details->user_allow_delete) && !empty($details->user_allow_delete) && strtolower($details->user_allow_delete) == 'yes' && $details->user_status != "5")
+                          <form action="{{route('admin.user.delete', ["soft", $details->user_id_hash])}}" method="post" class="delete-form">
                             @csrf
                             <input type="hidden" name="_method" value="delete" />
                             <button type="submit" class="btn btn-danger btn-edit-custom">
