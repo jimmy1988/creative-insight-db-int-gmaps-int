@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Controllers\Auth\Backend\BackendLoginController;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
-use App\Http\Controller\Auth\Backend\BackendLoginController as Login;
 
 class Authenticate extends Middleware
 {
@@ -16,7 +16,7 @@ class Authenticate extends Middleware
     protected function redirectTo($request)
     {
         if (! $request->expectsJson()) {
-          Login::logout();
+          BackendLoginController::logout();
           return route('admin.login.showLoginForm');
         }
     }
