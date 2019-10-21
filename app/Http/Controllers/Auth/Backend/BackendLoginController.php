@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth\Backend;
 
+use Session;
 use App\AdminUsers;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
