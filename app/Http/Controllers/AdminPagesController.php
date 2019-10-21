@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\AdminUsers;
+use App\Places;
 use App\UserStatus;
+use App\PlaceStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -266,19 +268,47 @@ class AdminPagesController extends Controller
 
 
     public function allPlaces(){
+      $thisUser = parent::currentUserDetails();
+      $allPlacesActive = Places::whereIn('place_status', ["1"])->orderBy('place_status', 'ASC')->orderBy('place_id', 'ASC')->get();
+      $allPlacesNotActive = Places::whereNotIn('place_status', ['2', '3'])->orderBy('place_status', 'ASC')->orderBy('place_id', 'ASC')->get();
+      $allPlaces = $allPlacesActive->merge($allPlacesNotActive);
+      $data = array(
+        "pageTitle" => "All Places",
+        "thisUser" => $thisUser,
+        "allPlaces" => $allPlaces
+      );
 
+      return view("backend.pages.all-places")->with($data);
     }
 
     public function showAddPlaceForm(){
+      $thisUser = parent::currentUserDetails();
+      $placeStatuses = PlaceStatus::all()->toArray();
 
+      $data = array(
+        "pageTitle" => "Add Place",
+        "thisUser" => $thisUser,
+        "placeStatuses" => $placeStatuses
+      );
+
+      return view("backend.pages.add-edit-place")->with($data);
     }
 
     public function createPlace(){
 
     }
 
-    public function showEditPlaceForm($placeIDHash = null){
+    public function showEditPlaceForm(Request $request, $placeIDHash = null){
+      $thisUser = parent::currentUserDetails();
+      $placeToEdit = Places::where('place_id_hash', $placeIDHash)->first();
 
+      $data = array(
+        "pageTitle" => "Edit Place",
+        "thisUser" => $thisUser,
+        "placeToEdit" => $placeToEdit
+      );
+
+      return view("backend.pages.add-edit-place")->with($data);
     }
 
     public function updatePlace(){
@@ -286,11 +316,74 @@ class AdminPagesController extends Controller
     }
 
     public function deletedPlaces(){
+      $thisUser = parent::currentUserDetails();
+      $deletedPlaces = Places::where("place_status", "3")->orderBy("place_id", "ASC")->get();
 
+      $data = array(
+        "pageTitle" => "Deleted Places",
+        "thisUser" => $thisUser,
+        "deletedPlaces" => $deletedPlaces
+      );
+
+      return view("backend.pages.deleted-places")->with($data);
     }
 
-    public function deletePlace($method = null, $placeIDHash = null){
+    public function deletePlace(Request $request, $method = null, $placeIDHash = null){
+      if(isset($placeIDHash) && !empty($placeIDHash)){
 
+        if(isset($deleteMethod) && !empty($deleteMethod)){
+          $placeToDelete = Places::where('place_id_hash', $placeIDHash)->first();
+
+          if(strtolower($deleteMethod) == "soft"){
+            $placeToDelete->place_status = "3";
+            $placeToDelete->place_date_deleted = date("Y-m-d H:i:s");
+            $placeToDelete->save();
+
+            $data = array(
+              "messages" => array(
+                "success" => array("Place deleted successfully"),
+                "errors" => array()
+              )
+            );
+            return redirect()->route('admin.places')->with($data);
+          }elseif(strtolower($deleteMethod) == "hard"){
+            $placeToDelete->delete();
+
+            $data = array(
+              "messages" => array(
+                "success" => array("Place deleted successfully"),
+                "errors" => array()
+              )
+            );
+            return redirect()->route('admin.places.deleted')->with($data);
+          }else{
+            $data = array(
+              "messages" => array(
+                "success" => array(),
+                "errors" => array("An invalid delete method was supplied, please try again")
+              )
+            );
+            return redirect()->route('admin.places')->with($data);
+          }
+        }else{
+          $data = array(
+            "messages" => array(
+              "success" => array(),
+              "errors" => array("A delete method was not specified, please try again")
+            )
+          );
+          return redirect()->route('admin.places')->with($data);
+        }
+
+      }else{
+        $data = array(
+          "messages" => array(
+            "success" => array(),
+            "errors" => array("No place found with those details, please try again")
+          )
+        );
+        return redirect()->route('admin.places')->with($data);
+      }
     }
 
 }
