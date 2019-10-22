@@ -1,77 +1,73 @@
-@extends('layouts.app')
+@extends('backend.templates.admin')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Register') }}</div>
+  @include('backend.includes.template-messages')
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('register') }}">
-                        @csrf
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xs-12 auth-container">
 
-                        <div class="form-group row">
-                            <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
-
-                                @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
-
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Register') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+        <div class="card auth-card">
+          <form action="{{route('admin.user.add')}}" method="post">
+            @csrf
+            <div class="card-header text-center">
+              <div class="login-logo">
+                <a href="/">
+                  <img alt="Project Logo" src="/images/logo.png" class="auth-logo"/>
+                </a>
+              </div>
             </div>
-        </div>
+            <div class="card-body auth-body">
+              <div class="login-box auth-box">
+                <div class="login-box-body auth-box-body">
+                  <h4 class="text-center auth-title">@if (isset($pageTitle) && !empty($pageTitle)) {{ $pageTitle }} @else {{ "Register" }} @endif</h4>
+                  <div class="form-group has-feedback">
+                    <input type="text" class="form-control" placeholder="First Name" name="user_first_name" id="user_first_name" required>
+                    <span class="glyphicon form-control-feedback"><i class="fas fa-user"></i></span>
+                  </div>
+                  <div class="form-group has-feedback">
+                    <input type="text" class="form-control" placeholder="Surname" name="user_surname" id="user_surname" required>
+                    <span class="glyphicon form-control-feedback"><i class="fas fa-user"></i></span>
+                  </div>
+                  <div class="form-group has-feedback">
+                    <input type="email" class="form-control" placeholder="Email" name="user_email" id="user_email" required>
+                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                  </div>
+                  <div class="form-group has-feedback">
+                      <div class="col-xs-8 no-gutters">
+                        <input type="password" class="form-control" id="user_password" name="user_password" placeholder="Password" required>
+                        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                      </div>
+                      <div class="col-xs-4 text-right no-gutters">
+                        <a href="#" class="btn btn-info generate-password-button">Generate</a>
+                        <a href="#" toggle="#user_password" class="btn btn-success show-password toggle-password"><i class="fas fa-eye"></i></a>
+                      </div>
+                      <div class="clearfix"></div>
+                  </div>
+                  <div class="form-group has-feedback">
+                      <div class="col-xs-10 no-gutters">
+                        <input type="password" class="form-control" id="user_password_confirm" name="user_password_confirm" placeholder="Confirm Password" required>
+                        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                      </div>
+                      <div class="col-xs-2 text-right no-gutters">
+                        <a href="#" toggle="#user_password_confirm" class="btn btn-success show-password toggle-password"><i class="fas fa-eye"></i></a>
+                      </div>
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+                <!-- /.login-box-body -->
+              </div>
+              <!-- /.login-box -->
+            </div>
+            <div class="card-footer text-right auth-footer">
+              <button type="submit" class="btn btn-primary btn-block btn-flat">Register</button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
-</div>
+  </div>
+
+  @include('backend.includes.auth-password-reveal')
+  <script type="text/javascript" src="/js/password-generator.js"></script>
 @endsection

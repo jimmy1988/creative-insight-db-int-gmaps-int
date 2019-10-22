@@ -1,0 +1,130 @@
+.logo{
+  -webkit-transition: width .3s ease-in-out;
+  -o-transition: width .3s ease-in-out;
+  transition: width .3s ease-in-out;
+  display: block;
+  float: left;
+  height: 50px;
+  font-size: 20px;
+  line-height: 50px;
+  text-align: center;
+  width: 230px;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  padding: 0 15px;
+  font-weight: 300;
+  overflow: hidden;
+}
+
+.auth-header{
+  -webkit-transition: margin-left .3s ease-in-out;
+    -o-transition: margin-left .3s ease-in-out;
+    transition: margin-left .3s ease-in-out;
+    margin-bottom: 0;
+    border: none;
+    min-height: 50px;
+    border-radius: 0;
+}
+
+.auth-header,
+.logo,
+.skin-blue .main-header .logo,
+.skin-blue .main-header .navbar{
+  background: #636363;
+  color:#FFF;
+}
+
+.auth-content{
+  background-color: #ecf0f5;
+  z-index: 800;
+  margin-top: 0;
+}
+
+.logo-mini .main-nav-logo-admin{
+  display: inline-block;
+  width:30px;
+  text-align: center;
+}
+
+.logo-lg .main-nav-logo-admin{
+  display: inline-block;
+  width:30px;
+  text-align: center;
+}
+
+.auth-logo{
+  width:100%;
+}
+
+.card-header{
+  background: #636363;
+  color:#FFF;
+}
+
+.login-logo {
+    width: 50px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.auth-card {
+    margin: 50px 0;
+}
+
+.login-box{
+  margin:0;
+  width:100%;
+}
+
+.auth-title {
+    margin: 0 0 25px 0;
+    font-weight: 800;
+    font-size: 22px;
+}
+
+.form-checkbox{
+  padding-left: 6px;
+}
+
+.auth-container{
+  width: 50%;
+  margin: 0 auto;
+  display: block;
+  flex: unset;
+  float: none;
+}
+
+.auth-box-body{
+  padding-bottom:25px;
+}
+
+.auth-messages{
+  margin-top:25px
+}
+
+.back-login-custom {
+    margin-top: 15px;
+    padding-left: 0;
+}
+
+.admin-content{
+  margin-top:15px !important;
+}
+
+.text-black{
+    color: #000;
+    font-weight: 800;
+    text-align: left !important;
+}
+
+.text-black:hover{
+    color: #FFF !important;
+    font-weight: 800;
+}
+
+.delete-form{
+  display: inline-block;
+}
+
+.custom-form-control{
+  margin-top:15px;
+}

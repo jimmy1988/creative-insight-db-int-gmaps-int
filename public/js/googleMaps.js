@@ -272,6 +272,7 @@ function plotMarkers(results, status){
         var thisMarker = createmarker(results[i]);
         markers.push(thisMarker);
         var thisInfoWindow = createInfoWindow(results[i], thisMarker);
+        // console.log(JSON.stringify(results[i]));
         $("#rightPaneContent").append(createListItem(results[i], distance, i, i));
       }else{
         break;

@@ -13,14 +13,23 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+        Schema::create('admin_users', function (Blueprint $table) {
+            $table->integer('user_id')->autoIncrement();
+            $table->string('user_id_hash')->unique();
+            $table->string('user_email')->unique();
+            $table->string('user_email_verify_token')->unique();
+            $table->dateTime('user_email_verified_at')->nullable();
+            $table->string('user_password');
+            $table->string('user_password_reset_token')->nullable();
+            $table->dateTime('user_password_last_updated')->nullable();
+            $table->string('user_first_name');
+            $table->string('user_surname');
             $table->rememberToken();
-            $table->timestamps();
+            $table->integer('user_status')->default("1");
+            $table->dateTime('user_date_last_updated')->nullable();
+            $table->dateTime('user_date_created')->useCurrent();
+            $table->dateTime('user_date_deleted')->nullable();
+            $table->string('user_allow_delete')->default('yes');
         });
     }
 
@@ -31,6 +40,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('admin_users');
     }
 }
