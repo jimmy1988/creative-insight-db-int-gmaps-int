@@ -50,20 +50,20 @@
                     <span class="glyphicon form-control-feedback"><i class="fas fa-address-book"></i></span>
                   </div>
                   <div class="form-group has-feedback">
-                    <input type="text" class="form-control" placeholder="Place Postcode" name="place_address_postcode" id="place_address_postcode" required>
+                    <input type="text" class="form-control" placeholder="Place Postcode (Required)" name="place_address_postcode" id="place_address_postcode" required>
                     <span class="glyphicon form-control-feedback"><i class="fas fa-address-book"></i></span>
                   </div>
                   <div class="form-group has-feedback">
-                    <input type="text" class="form-control" placeholder="Latitude" name="place_location_lat" id="place_location_lat" required>
+                    <input type="text" class="form-control" placeholder="Latitude (Required)" name="place_location_lat" id="place_location_lat" required>
                     <span class="glyphicon form-control-feedback"><i class="fas fa-crosshairs"></i></span>
                   </div>
                   <div class="form-group has-feedback">
-                    <input type="text" class="form-control" placeholder="Longitude" name="place_location_lng" id="place_location_lng" required>
+                    <input type="text" class="form-control" placeholder="Longitude (Required)" name="place_location_lng" id="place_location_lng" required>
                     <span class="glyphicon form-control-feedback"><i class="fas fa-crosshairs"></i></span>
                   </div>
                   <div class="form-group has-feedback">
                     <select class="form-control" name="place_status" id="place_status">
-                      <option value="-1">Place Status</option>
+                      <option value="-1">Place Status (Required)</option>
                       @if (isset($placeStatuses) && !empty($placeStatuses))
                         @for ($i=0; $i < count($placeStatuses); $i++)
                           <option value="{{$placeStatuses[$i]['place_status_id']}}">{{$placeStatuses[$i]['place_status']}}</option>
