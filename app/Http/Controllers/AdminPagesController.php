@@ -270,7 +270,7 @@ class AdminPagesController extends Controller
     public function allPlaces(){
       $thisUser = parent::currentUserDetails();
       $allPlacesActive = Places::whereIn('place_status', ["1"])->orderBy('place_status', 'ASC')->orderBy('place_id', 'ASC')->get();
-      $allPlacesNotActive = Places::whereNotIn('place_status', ['2', '3'])->orderBy('place_status', 'ASC')->orderBy('place_id', 'ASC')->get();
+      $allPlacesNotActive = Places::whereIn('place_status', ['2', '3'])->orderBy('place_status', 'ASC')->orderBy('place_id', 'ASC')->get();
       $allPlaces = $allPlacesActive->merge($allPlacesNotActive);
       $data = array(
         "pageTitle" => "All Places",
@@ -291,27 +291,175 @@ class AdminPagesController extends Controller
         "placeStatuses" => $placeStatuses
       );
 
-      return view("backend.pages.add-edit-place")->with($data);
+      return view("backend.pages.add-place")->with($data);
     }
 
-    public function createPlace(){
+    public function createPlace(Request $request){
+      $messages = array(
+        'place_name.required' => "Fill in the place name",
+        'place_address_1.required' => "Please fill in the first line of the address",
+        'place_address_city.required' => "Please fill in the address ccity",
+        'place_address_county.required' => "Please fill in the address county",
+        'place_address_postcode.required' => "Please fill in the address postcode",
+        'place_location_lat.required' => "Please fill in the Latitude",
+        'place_location_lat.required' => "Please fill in the Longitude"
+      );
+
+      $rules = array(
+        'place_name' => "required|max:255",
+        'place_address_1' => 'required|max:255',
+        'place_address_city' => 'required|max:255',
+        'place_address_county' => 'required|max:255',
+        'place_address_postcode' => 'required|max:255',
+        'place_location_lat' => 'required',
+        'place_location_lng' => 'required'
+      );
+
+      $validatedData = $request->validate($rules, $messages);
+
+      if($request->place_status <= "0"){
+        $data = array(
+          "messages" => array(
+            "success" => array(),
+            "errors" => array("Please provide a valid place status")
+          )
+        );
+        return redirect()->route('admin.place.add.showForm')->with($data);
+      }else{
+
+        $newPlace = array();
+
+        $newPlace['place_id_hash'] = sha1(uniqid($request->place_address_city).strtotime("now"));
+        $newPlace['place_name'] = $request->place_name;
+        $newPlace['place_address_1'] = $request->place_address_1;
+        $newPlace['place_address_city'] = $request->place_address_city;
+        $newPlace['place_address_county'] = $request->place_address_county;
+        $newPlace['place_address_postcode'] = $request->place_address_postcode;
+        $newPlace['place_location_lat'] = $request->place_location_lat;
+        $newPlace['place_location_lng'] = $request->place_location_lng;
+        $newPlace['place_status'] = $request->place_status;
+
+        if(isset($request->place_address_2) && !empty($request->place_address_2)){
+          $newPlace['place_address_2'] = $request->place_address_2;
+        }
+
+        if(isset($request->place_address_3) && !empty($request->place_address_3)){
+          $newPlace['place_address_3'] = $request->place_address_3;
+        }
+
+        if(isset($request->place_address_area) && !empty($request->place_address_area)){
+          $newPlace['place_address_area'] = $request->place_address_area;
+        }
+
+        Places::create($newPlace);
+
+        $data = array(
+          "messages" => array(
+            "success" => array("Place Added successfully"),
+            "errors" => array()
+          )
+        );
+        return redirect()->route('admin.places')->with($data);
+      }
 
     }
 
     public function showEditPlaceForm(Request $request, $placeIDHash = null){
       $thisUser = parent::currentUserDetails();
       $placeToEdit = Places::where('place_id_hash', $placeIDHash)->first();
+      $placeStatuses = PlaceStatus::all()->toArray();
 
       $data = array(
         "pageTitle" => "Edit Place",
         "thisUser" => $thisUser,
+        "placeStatuses" => $placeStatuses,
         "placeToEdit" => $placeToEdit
       );
 
-      return view("backend.pages.add-edit-place")->with($data);
+      return view("backend.pages.edit-place")->with($data);
     }
 
-    public function updatePlace(){
+    public function updatePlace(Request $request){
+
+      $messages = array(
+        'place_id.required' => "An invalid id has been submitted, please try again",
+        'place_name.required' => "Fill in the place name",
+        'place_address_1.required' => "Please fill in the first line of the address",
+        'place_address_city.required' => "Please fill in the address ccity",
+        'place_address_county.required' => "Please fill in the address county",
+        'place_address_postcode.required' => "Please fill in the address postcode",
+        'place_location_lat.required' => "Please fill in the Latitude",
+        'place_location_lat.required' => "Please fill in the Longitude",
+        'place_status.required' => "Please fill in the status",
+      );
+
+      $rules = array(
+        'place_id' => "required",
+        'place_name' => "required|max:255",
+        'place_address_1' => 'required|max:255',
+        'place_address_city' => 'required|max:255',
+        'place_address_county' => 'required|max:255',
+        'place_address_postcode' => 'required|max:255',
+        'place_location_lat' => 'required',
+        'place_location_lng' => 'required',
+        'place_status' => 'required'
+      );
+
+      $validatedData = $request->validate($rules, $messages);
+
+      if($request->place_status <= "0"){
+        $data = array(
+          "messages" => array(
+            "success" => array(),
+            "errors" => array("Please provide a valid place status")
+          )
+        );
+        return redirect()->route('admin.place.edit.showForm', [$request->place_id])->with($data);
+      }else{
+        $placeToEdit = Places::where('place_id_hash', $request->place_id)->first();
+
+        if(!empty($placeToEdit) && $placeToEdit->count() > 0){
+
+          $placeToEdit->place_name = $request->place_name;
+          $placeToEdit->place_address_1 = $request->place_address_1;
+          $placeToEdit->place_address_city = $request->place_address_city;
+          $placeToEdit->place_address_county = $request->place_address_county;
+          $placeToEdit->place_address_postcode = $request->place_address_postcode;
+          $placeToEdit->place_location_lat = $request->place_location_lat;
+          $placeToEdit->place_location_lng = $request->place_location_lng;
+          $placeToEdit->place_status = $request->place_status;
+
+          if(isset($request->place_address_2) && !empty($request->place_address_2)){
+            $placeToEdit->place_address_2 = $request->place_address_2;
+          }
+
+          if(isset($request->place_address_3) && !empty($request->place_address_3)){
+            $placeToEdit->place_address_3 = $request->place_address_3;
+          }
+
+          if(isset($request->place_address_area) && !empty($request->place_address_area)){
+            $placeToEdit->place_address_area = $request->place_address_area;
+          }
+
+          $placeToEdit->save();
+
+          $data = array(
+            "messages" => array(
+              "success" => array("Place updated successfully"),
+              "errors" => array()
+            )
+          );
+          return redirect()->route('admin.place.edit.showForm', [$request->place_id])->with($data);
+        }else{
+          $data = array(
+            "messages" => array(
+              "success" => array(),
+              "errors" => array("No place details found with those details, please try again")
+            )
+          );
+          return redirect()->route('admin.place.edit.showForm', [$request->place_id])->with($data);
+        }
+      }
 
     }
 
@@ -328,7 +476,8 @@ class AdminPagesController extends Controller
       return view("backend.pages.deleted-places")->with($data);
     }
 
-    public function deletePlace(Request $request, $method = null, $placeIDHash = null){
+    public function deletePlace(Request $request, $deleteMethod = null, $placeIDHash = null){
+
       if(isset($placeIDHash) && !empty($placeIDHash)){
 
         if(isset($deleteMethod) && !empty($deleteMethod)){
