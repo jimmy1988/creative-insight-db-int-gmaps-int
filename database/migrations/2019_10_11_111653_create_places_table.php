@@ -16,16 +16,16 @@ class CreatePlacesTable extends Migration
         Schema::create('places', function (Blueprint $table) {
             $table->integer('place_id')->autoIncrement();
             $table->string('place_id_hash')->unique();
-            $table->string('place_name');
-            $table->string('place_address_1');
-            $table->string('place_address_2')->nullable();
-            $table->string('place_address_3')->nullable();
-            $table->string('place_address_area')->nullable();
-            $table->string('place_address_city');
-            $table->string('place_address_county');
-            $table->string('place_address_postcode');
-            $table->string('place_location_lat');
-            $table->string('place_location_lng');
+            $table->string('place_name')->index();
+            $table->string('place_address_1')->index();
+            $table->string('place_address_2')->nullable()->index();
+            $table->string('place_address_3')->nullable()->index();
+            $table->string('place_address_area')->nullable()->index();
+            $table->string('place_address_city')->index();
+            $table->string('place_address_county')->index();
+            $table->string('place_address_postcode')->index();
+            $table->string('place_location_lat')->index();
+            $table->string('place_location_lng')->index();
             $table->integer('place_status')->default("1");
             $table->dateTime('place_date_last_updated')->nullable();
             $table->dateTime('place_date_created')->useCurrent();
