@@ -8,9 +8,27 @@
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
           <div class="form-group">
             <div class="row">
-              <div id="search-box-container" class="col-md-8">
+              <div id="search-box-container" class="col-md-10">
                 <div class="form-group">
                   <input type="text" id="search-box" class="form-control" placeholder="Search For Businesses e.g.Nandos"/>
+                  <div class="" id="search-results-container">
+                    {{-- <a href="#" class="container-fluid search-result">
+                      <div class="row">
+                        <div class="col-xs-9 col-md-9 search-column-1">
+                          <h4 class="text-center search-place-name">Nando's West Bromwich</h4>
+                          <p class="text-center search-place-address">Unit 5A New Square, Walsall St, West Bromwich, Birmingham, West Midlands, B70 7PP</p>
+                        </div>
+                        <div class="col-xs-3 col-md-3 text-center search-column-2">
+                          <p>
+                            <span class="miles-amount">
+                              1.2
+                            </span>
+                            <span>Miles</span>
+                          </p>
+                        </div>
+                      </div>
+                    </a> --}}
+                  </div>
                 </div>
               </div>
               <div id="distance-container" class="col-md-2">
@@ -23,9 +41,9 @@
                   </select>
                 </div>
               </div>
-              <div id="search-button-container" class="col-md-2">
+              {{-- <div id="search-button-container" class="col-md-2">
                 <button type="submit" id="search-button" class="btn btn-secondary"><i class="fas fa-crosshairs"></i></button>
-              </div>
+              </div> --}}
             </div>
           </div>
       </div>
@@ -60,5 +78,10 @@
     </div>
   </div>
 </div>
+
+<script type="text/javascript">
+  var ajaxSearchRoute = "{{route('index.ajax.searchPlaces')}}";
+</script>
+
 
 @endsection
