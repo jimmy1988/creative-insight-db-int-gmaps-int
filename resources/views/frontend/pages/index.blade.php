@@ -15,22 +15,7 @@
                 <div class="form-group">
                   <input type="text" id="search-box" class="form-control" placeholder="Search For Businesses e.g.Nandos"/>
                   <div class="" id="search-results-container">
-                    {{-- <a href="#" class="container-fluid search-result">
-                      <div class="row">
-                        <div class="col-xs-9 col-md-9 search-column-1">
-                          <h4 class="text-center search-place-name">Nando's West Bromwich</h4>
-                          <p class="text-center search-place-address">Unit 5A New Square, Walsall St, West Bromwich, Birmingham, West Midlands, B70 7PP</p>
-                        </div>
-                        <div class="col-xs-3 col-md-3 text-center search-column-2">
-                          <p>
-                            <span class="miles-amount">
-                              1.2
-                            </span>
-                            <span>Miles</span>
-                          </p>
-                        </div>
-                      </div>
-                    </a> --}}
+                  
                   </div>
                 </div>
               </div>
@@ -84,7 +69,6 @@
 
 <script type="text/javascript">
   var ajaxSearchRoute = "{{route('index.ajax.searchPlaces', ["","","", ""])}}";
-  ajaxSearchRoute = ajaxSearchRoute.substring(0, ajaxSearchRoute.lastIndexOf("/"));
 </script>
 
 
