@@ -202,7 +202,8 @@
 #search-results-container {
     border: 1px solid #000;
     border-top: none;
-    height: 200px;
+    max-height: 200px;
+    overflow:auto;
     position: absolute;
     z-index: 46;
     width: 96.5%;
