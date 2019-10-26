@@ -4,6 +4,9 @@
 
 <div class="container-fluid no-gutters" id="map-container">
   <form method="post" action="" id="searchForm">
+    @csrf
+    <input type="hidden" id="current-lat" value="" />
+    <input type="hidden" id="current-lng" value="" />
     <div class="row" id="search-container">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
           <div class="form-group">
@@ -80,7 +83,8 @@
 </div>
 
 <script type="text/javascript">
-  var ajaxSearchRoute = "{{route('index.ajax.searchPlaces')}}";
+  var ajaxSearchRoute = "{{route('index.ajax.searchPlaces', ["","","", ""])}}";
+  ajaxSearchRoute = ajaxSearchRoute.substring(0, ajaxSearchRoute.lastIndexOf("/"));
 </script>
 
 
