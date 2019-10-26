@@ -47,9 +47,11 @@ class FrontEndPagesController extends Controller
 
         if(!empty($searchResults) && $searchResults->count() > 0) {
 
-          if(isset($currentLat) && !empty($currentLat) && isset($currentLng) && !empty($currentLng) && isset($distanceMiles) && !empty($distanceMiles)){
+          if(isset($currentLat) && !empty($currentLat) && isset($currentLng) && !empty($currentLng) && isset($distanceMiles)){
 
             $searchResultsArray = $searchResults->toArray();
+
+            $finalSearchResultsArray = array();
 
             for($i=0; $i < count($searchResultsArray); $i++){
 
@@ -64,17 +66,16 @@ class FrontEndPagesController extends Controller
               curl_close($ch);
               $response_a = json_decode($response, true);
               $chDistanceMiles = (float) $response_a['rows'][0]['elements'][0]['distance']['text'];
-              if(isset($chDistanceMiles) && !empty($chDistanceMiles) && $chDistanceMiles >= 0){
+              if(isset($chDistanceMiles) && !empty($chDistanceMiles) && $chDistanceMiles >= 0 && $chDistanceMiles <= ($distanceMiles + 5)){
                 $searchResultsArray[$i]['distance'] = $chDistanceMiles;
-              }else{
-                $searchResultsArray[$i]['distance'] = 0;
+                array_push($finalSearchResultsArray, $searchResultsArray[$i]);
               }
             }
 
-            $keys = array_column($searchResultsArray, 'distance');
-            array_multisort($keys, SORT_ASC, $searchResultsArray);
+            $keys = array_column($finalSearchResultsArray, 'distance');
+            array_multisort($keys, SORT_ASC, $finalSearchResultsArray);
 
-            return json_encode($searchResultsArray);
+            return json_encode($finalSearchResultsArray);
 
           }else{
             return json_encode($searchResults->toArray());
