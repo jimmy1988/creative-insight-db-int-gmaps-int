@@ -29,7 +29,7 @@
 *   FRONTEND ROUTES
 */
 Route::get('/', "FrontendPagesController@index")->name('index');
-Route::get('/ajax/searchPlaces', "FrontendPagesController@searchForPlaces")->name('index.ajax.searchPlaces');
+Route::get('/ajax/searchPlaces/{searchTerm}/{currentLat}/{currentLng}/{distanceMiles}', "FrontendPagesController@searchForPlaces")->name('index.ajax.searchPlaces');
 
 /*
 *   BACKEND AUTHENTICATION ROUTES
