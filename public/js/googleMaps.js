@@ -5,200 +5,25 @@ var map;
 var infoWindow;
 var marker;
 var center;
-var markers = [];
 var currentloc = {};
-var currentlocDetails = {};
-var request;
-var service;
-var distanceMatrix;
-var places = [];
-var distanceMiles;
-var distanceMeters;
 var directionsService;
-var directionsRenderer
+var directionsRenderer;
+var searchTerm;
+var distanceMiles;
+var currentLat;
+var currentLng;
+var xhr = null;
+var queryString = "";
+var markers = [];
 
-
-//Removes the markers from the map, but keeps them in the array.
-function clearAllMarkers(removeFromMap = true, removeFromArray = false, removeFromMapExceptions = [], removeFromArrayExceptions = []) {
-  if(markers.length > 0){
-    for (var i = 0; i < markers.length; i++) {
-      if(removeFromMap == true){
-        if(removeFromMapExceptions.indexOf(i) == -1){
-          markers[i].setMap(null);
-        }
-      }
-
-      if(removeFromArray == true){
-        if(removeFromArrayExceptions.indexOf(i) == -1){
-          markers.splice(i, 1);
-          places.splice(i, 1);
-        }
-      }
-    }
-  }
-}
-
-function clearDirections(){
-  directionsRenderer.setMap(null);
-}
-
-function createListItem(place = null, distance = 0, markersArrayIndex = 0, placesArrayIndex = 0){
-  var html = "";
-  if(place != null && place != undefined && place != ""){
-
-    html = html + "<div class=\"map-entry\">";
-    html = html + "<div class=\"row\">";
-    html = html + "<div class=\"col-md-12\">";
-    html = html + "<h6 class=\"map-entry-title text-center\">" + place.name + "</h6>";
-    html = html + "<p class=\"map-entry-address\">" + place.vicinity + "</p>";
-    html = html + "<p class=\"map-entry-miles\"><span>" + distance + "</span><span> Miles Away</span></p>";
-    html = html + "</div>";
-    html = html + "</div>";
-    html = html + "<div class=\"row\">";
-    html = html + "<div class=\"col-md-12\">";
-    html = html + "<p class=\"rating\">Rating:&nbsp;";
-    html = html + "<span class=\"rating-stars\">";
-
-    var rating = parseFloat(place.rating);
-    var ratingFloor = Math.floor(place.rating);
-    var roundedRating = Math.round(place.rating * 2)/2;
-    roundedRating = parseFloat(roundedRating.toFixed(1));
-
-    if(rating > 0.5 && rating < 1){
-      html = html + "<i class=\"fas fa-star-half-alt\"></i>";
-    }else if(rating >= 1){
-      for(var i = 0; i < ratingFloor; i++){
-        html = html + "<i class=\"fas fa-star\"></i>";
-      }
-
-      var halfRating = parseFloat(rating) - parseFloat(i);
-      if(halfRating >= 0.5){
-        html = html + "<i class=\"fas fa-star-half-alt\"></i>";
-      }
-    }
-
-
-    html = html + "</span>";
-    html = html + "&nbsp;";
-    html = html + "<span>" + place.rating + "</span>";
-    html = html + "</p>";
-    html = html + "</div>";
-    html = html + "<div class=\"col-md-12 text-right directionsButtonContainer\">";
-    html = html + "<a href=\"#\" onclick=\"getDirections(event, this," + markersArrayIndex + ", " + placesArrayIndex + ")\" class=\"btn btn-info get-directions-button\">Get Directions</a>";
-    html = html + "</div>";
-    html = html + "</div>";
-    html = html + "</div>";
-  }
-
-  return html;
-}
-
-function createInfoWindow(place = null, infowindowOptions = null){
-  if(place != undefined && place != null && place.name != undefined && place.name != null){
-    var infowindow = new google.maps.InfoWindow({
-      content: place.name
-    });
-    marker.addListener('click', function(){
-      infowindow.open(map, this);
-    });
-  }else if (infowindowOptions != undefined && infowindowOptions != null && infowindowOptions.name != undefined && infowindowOptions.name != null) {
-    var infowindow = new google.maps.InfoWindow({
-      content: infowindowOptions.name
-    });
-    marker.addListener('click', function(){
-      infowindow.open(map, this);
-    });
-  }
-}
-
-function createmarker(place = null, markerOptions = null){
+function createmarker(place = null){
 
   var marker = new google.maps.Marker;
   marker.setMap(map);
 
-  if(
-    place.geometry != undefined && place.geometry != null &&
-    place.geometry.location != undefined && place.geometry.location != null
-  ){
-    marker.setPosition(place.geometry.location);
-  }else{
-    marker.setPosition({lat: parseFloat(place.lat), lng: parseFloat(place.lng)});
-  }
+  marker.setPosition({lat: parseFloat(place.lat), lng: parseFloat(place.lng)});
 
   return marker;
-}
-
-function displayDirections(route = []){
-  var html = "";
-  if(route != undefined && route != null && route.length > 0){
-    html = html + "<div class=\"card-header text-center\" id=\"rightPaneHeader\">Directions</div>";
-
-    for(var i = 0; i < route.length; i++){
-      var stepNumber = i + 1;
-
-      html = html + "<div class=\"container-fluid directions-entry\">";
-      html = html + "<div class=\"directions-entry-row\">";
-      html = html + "<div class=\"step-number-container text-center\">";
-      html = html + "<div class=\"step-number\">" + stepNumber + "</div>";
-      html = html + "</div>";
-      html = html + "<div class=\"step-instructions-container text-center\">";
-      html = html + "<div class=\"step-instructions\">" + route[i].instructions + "</div>";
-      html = html + "</div>";
-      html = html + "<div class=\"clearfix\"></div>";
-      html = html + "</div>";
-      html = html + "</div>";
-    }
-  }
-
-  return html;
-}
-
-function getDirections(event, elem, markersArrayIndex = -1, placesArrayIndex = -1){
-  event.preventDefault();
-  if(placesArrayIndex != undefined && placesArrayIndex != null && placesArrayIndex >= 0){
-    var thisPlace = places[placesArrayIndex];
-
-    resetAll(true, false, true, false);
-
-    var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(currentloc.lat, currentloc.lng), thisPlace.geometry.location);
-    distance = parseFloat(distance) / parseFloat("1609.344");
-    distance = parseFloat(distance.toFixed(1));
-
-    $("#rightPaneContent").html("");
-    $("#rightPaneContent").append(createListItem(thisPlace, distance, markersArrayIndex, placesArrayIndex));
-    $("#rightPaneContent .directionsButtonContainer .get-directions-button").hide();
-    $("#rightPaneContent .directionsButtonContainer").append("<a href=\"#\" onclick=\"resetSearchResults()\" class=\"btn btn-success resetSearchResultsButton\">Restore Search</a>");
-
-    var home = center;
-    var destination = thisPlace.geometry.location;
-
-    directionsRenderer.setMap(map);
-
-    var request = {
-      origin: home,
-      destination: destination,
-      travelMode: 'DRIVING'
-    };
-
-    directionsService.route(request, function(result, status) {
-      if (status == 'OK') {
-        directionsRenderer.setDirections(result);
-        var routeArray = result.routes[0].legs[0].steps
-        $("#rightPaneContent").append(displayDirections(routeArray));
-      }
-    });
-
-  }else{
-    alert("No location found");
-  }
-}
-
-function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-  infoWindow.setPosition(pos);
-  infoWindow.setContent(browserHasGeolocation ?
-                        'Error: The Geolocation service failed.' :
-                        'Error: Your browser doesn\'t support geolocation.');
-  infoWindow.open(map);
 }
 
 function initializeMap() {
@@ -222,6 +47,9 @@ function initializeMap() {
     navigator.geolocation.getCurrentPosition(function(position) {
       currentloc.lat = parseFloat(position.coords.latitude.toFixed(7));
       currentloc.lng = parseFloat(position.coords.longitude.toFixed(7));
+
+      $("#current-lat").val(parseFloat(position.coords.latitude.toFixed(7)));
+      $("#current-lng").val(parseFloat(position.coords.longitude.toFixed(7)));
 
       center = new google.maps.LatLng(currentloc.lat, currentloc.lng);
 
@@ -255,100 +83,200 @@ function initializeMap() {
   $("#curtain-outer").fadeOut(500);
 }
 
-function plotMarkers(results, status){
-  if(status == google.maps.places.PlacesServiceStatus.OK){
-    markers = [];
-    places = [];
-    for(var i = 0; i < results.length; i++){
+function loadXHR(){
+   if (window.XMLHttpRequest) {
+      xhr = new XMLHttpRequest();
+   } else {
+     xhr = new ActiveXObject("Microsoft.XMLHTTP");
+   }
+}
 
-      var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(currentloc.lat, currentloc.lng), results[i].geometry.location);
-      distance = parseFloat(distance) / parseFloat("1609.344");
-      distance = parseFloat(distance.toFixed(1));
+function resetSearch(clearSearchContent = true, hideSearchContent = true, removeResultsClass = true, clearMarkers = true){
 
-      var totalDistance = parseInt(distanceMiles) + 5;
+  if(clearSearchContent){
+    $("#search-results-container").html("");
+  }
 
-      if(distance <= totalDistance){
-        places.push(results[i]);
-        var thisMarker = createmarker(results[i]);
-        markers.push(thisMarker);
-        var thisInfoWindow = createInfoWindow(results[i], thisMarker);
-        // console.log(JSON.stringify(results[i]));
-        $("#rightPaneContent").append(createListItem(results[i], distance, i, i));
-      }else{
-        break;
+  if(hideSearchContent){
+    $("#search-results-container").hide();
+  }
+
+  if(removeResultsClass){
+    $("#search-results-container").removeClass("resultsFound");
+  }
+
+  if(clearMarkers){
+    if(markers.length > 0){
+      for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(null);
+        markers.splice(i, 1);
       }
     }
-
-    zoomlevel = 10;
-    map.setZoom(zoomlevel);
   }
 }
 
-function resetAll(map = false, form = false, removeFromMap = true, removeFromArray = false, removeFromMapExceptions = [], removeFromArrayExceptions = []){
-  if(map == true){
-    clearAllMarkers(removeFromMap, removeFromArray, removeFromMapExceptions, removeFromArrayExceptions);
-    clearDirections();
-    $("#rightPaneContent").html("");
-  }
+function responseXHR(){
+  if (xhr.readyState == 4 && xhr.status == 200) {
+    var responseJSON = JSON.parse(this.responseText);
+    var responseJSONCount = Object.keys(responseJSON).length;
+    resetSearch();
+     if(responseJSONCount > 0 && $("#search-box").val() != ""){
 
-  if(form == true){
-    $("#search-box").val("");
-    $("#distance-box").val("0");
+       for(var i = 0; i < responseJSONCount; i++){
+
+         var address = "";
+         if(responseJSON[i].place_address_1 != null && responseJSON[i].place_address_1 != undefined && responseJSON[i].place_address_1 != ""){
+           if(address!= null && address != undefined && address != ""){
+             address = address + ", " + responseJSON[i].place_address_1;
+           }else{
+             address = responseJSON[i].place_address_1;
+           }
+         }
+
+         if(responseJSON[i].place_address_2 != null && responseJSON[i].place_address_2 != undefined && responseJSON[i].place_address_2 != ""){
+           if(address!= null && address != undefined && address != ""){
+             address = address + ", " + responseJSON[i].place_address_2;
+           }else{
+             address = responseJSON[i].place_address_2;
+           }
+         }
+
+         if(responseJSON[i].place_address_3 != null && responseJSON[i].place_address_3 != undefined && responseJSON[i].place_address_3 != ""){
+           if(address!= null && address != undefined && address != ""){
+             address = address + ", " + responseJSON[i].place_address_3;
+           }else{
+             address = responseJSON[i].place_address_3;
+           }
+         }
+
+         if(responseJSON[i].place_address_area != null && responseJSON[i].place_address_area != undefined && responseJSON[i].place_address_area != ""){
+           if(address!= null && address != undefined && address != ""){
+             address = address + ", " + responseJSON[i].place_address_area;
+           }else{
+             address = responseJSON[i].place_address_area;
+           }
+         }
+
+         if(responseJSON[i].place_address_city != null && responseJSON[i].place_address_city != undefined && responseJSON[i].place_address_city != ""){
+           if(address!= null && address != undefined && address != ""){
+             address = address + ", " + responseJSON[i].place_address_city;
+           }else{
+             address = responseJSON[i].place_address_city;
+           }
+         }
+
+         if(responseJSON[i].place_address_county != null && responseJSON[i].place_address_county != undefined && responseJSON[i].place_address_county != ""){
+           if(address!= null && address != undefined && address != ""){
+             address = address + ", " + responseJSON[i].place_address_county;
+           }else{
+             address = responseJSON[i].place_address_county;
+           }
+         }
+
+         if(responseJSON[i].place_address_postcode != null && responseJSON[i].place_address_postcode != undefined && responseJSON[i].place_address_postcode != ""){
+           if(address!= null && address != undefined && address != ""){
+             address = address + ", " + responseJSON[i].place_address_postcode;
+           }else{
+             address = responseJSON[i].place_address_postcode;
+           }
+         }
+
+         var responseHTML = "";
+         responseHTML = responseHTML + "<a href=\"#\" onclick=\"getDirections(event, this," + markersArrayIndex + ", " + placesArrayIndex + ")\" class=\"container-fluid search-result\">";
+         responseHTML = responseHTML + " <div class=\"row\">";
+         responseHTML = responseHTML + "   <div class=\"col-xs-9 col-md-9 search-column-1\">";
+
+         if(responseJSON[i].place_name != null && responseJSON[i].place_name  != undefined && responseJSON[i].place_name != ""){
+           responseHTML = responseHTML + "     <h4 class=\"text-center search-place-name\">" + responseJSON[i].place_name + "</h4>";
+         }
+
+         responseHTML = responseHTML + "     <p class=\"text-center search-place-address\">" + address + "</p>";
+         responseHTML = responseHTML + "   </div>";
+         responseHTML = responseHTML + "   <div class=\"col-xs-3 col-md-3 text-center search-column-2\">";
+
+         if(responseJSON[i].distance != null && responseJSON[i].distance != undefined && responseJSON[i].distance != ""){
+           responseHTML = responseHTML + "      <p>";
+           responseHTML = responseHTML + "        <span class=\"miles-amount\">";
+           responseHTML = responseHTML + responseJSON[i].distance;
+           responseHTML = responseHTML + "        </span>";
+           responseHTML = responseHTML + "        <span>Miles</span>";
+           responseHTML = responseHTML + "      </p>";
+         }
+
+         responseHTML = responseHTML + "   </div>";
+         responseHTML = responseHTML + " </div>";
+         responseHTML = responseHTML + "</a>";
+
+         $("#search-results-container").append(responseHTML);
+         $("#search-results-container").addClass("resultsFound");
+         $("#search-results-container").show();
+
+         if(
+              responseJSON[i].place_location_lat != null && responseJSON[i].place_location_lat != undefined && responseJSON[i].place_location_lat != "" &&
+              responseJSON[i].place_location_lng != null && responseJSON[i].place_location_lng != undefined && responseJSON[i].place_location_lng != ""
+          ){
+           var currentMarker = createmarker({lat: responseJSON[i].place_location_lat, lng: responseJSON[i].place_location_lng});
+           markers.push(currentMarker);
+         }
+
+
+       }
+
+       zoomlevel = 10;
+       map.setZoom(zoomlevel);
+     }else{
+       if($("#search-box").val() != ""){
+         var responseHTML = "";
+         var responseHTML = "";
+         responseHTML = responseHTML + "<div class=\"container-fluid search-result\">";
+         responseHTML = responseHTML + " <div class=\"row\">";
+         responseHTML = responseHTML + "   <div class=\"col-xs-12 col-md-12 search-column-1\">";
+         responseHTML = responseHTML + "   <h4 class=\"text-center search-place-name\">No Places Found</h4>";
+         responseHTML = responseHTML + "   </div>";
+         responseHTML = responseHTML + " </div>";
+         responseHTML = responseHTML + "</div>";
+         $("#search-results-container").append(responseHTML);
+         $("#search-results-container").show();
+       }
+     }
   }
 }
 
-function resetSearchResults(){
-  resetAll(true, false, true, false);
-  for(var i = 0; i < places.length; i++){
+function searchResults(){
+  searchTerm = $("#search-box").val();
+  distanceMiles = $("#distance-box").val();
+  currentLat = $("#current-lat").val();
+  currentLng = $("#current-lng").val();
 
-    var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(currentloc.lat, currentloc.lng), places[i].geometry.location);
-    distance = parseFloat(distance) / parseFloat("1609.344");
-    distance = parseFloat(distance.toFixed(1));
+  if(
+    searchTerm != undefined && searchTerm != null && searchTerm != "" &&
+    distanceMiles != undefined && distanceMiles != null && distanceMiles != "" &&
+    currentLat != undefined && currentLat != null && currentLat != "" &&
+    currentLng != undefined && currentLng != null && currentLng != ""
+  ){
 
-    var totalDistance = parseInt(distanceMiles) + 5;
+    $("#search-results-container").html("");
+    loadXHR();
 
-    if(distance <= totalDistance){
-      var thisMarker = createmarker(places[i]);
-      var thisInfoWindow = createInfoWindow(places[i], thisMarker);
-      $("#rightPaneContent").append(createListItem(places[i], distance, i, i));
-    }else{
-      break;
-    }
+    xhr.onreadystatechange = responseXHR;
+
+    queryString = "/" + searchTerm + "/" + currentLat + "/" + currentLng + "/" + distanceMiles;
+
+    xhr.open("GET", ajaxSearchRoute + queryString, true);
+    xhr.send();
+  }else{
+    resetSearch();
   }
-
-  zoomlevel = 10;
-  map.setZoom(zoomlevel);
-}
-
-function searchMap(){
-  event.preventDefault();
-  $("#curtain-outer").fadeIn(500, function(){
-    resetAll(true, false, true, true);
-    zoomlevel = 16;
-    map.setZoom(zoomlevel);
-    var searchTerm = document.getElementById("search-box").value;
-    distanceMiles = document.getElementById("distance-box").value;
-    distanceMeters = Math.ceil((parseFloat(distanceMiles) + parseFloat(5)) * parseFloat("1609.344"));
-
-    request = {
-      location:center,
-      rankBy:google.maps.places.RankBy.DISTANCE,
-      name: [searchTerm],
-      types:[searchTerm]
-    };
-
-    service = new google.maps.places.PlacesService(map);
-    service.nearbySearch(request, plotMarkers);
-
-    map.setCenter(currentloc);
-    $("#curtain-outer").fadeOut(500);
-
-    $("#mapContainerMain").removeAttr("style");
-  });
-
-
 }
 
 $(document).ready(function(){
-  $("#searchForm").on("submit", searchMap);
+  $("#search-box").on("keyup", searchResults);
+  $("#distance-box").on("change", searchResults);
+  $("#search-box, #distance-box").on("focusout", function(){
+    resetSearch();
+  });
+
+  // $("#search-box, #distance-box").on("focusin", function(){
+  //   console.log("Got Focus");
+  // });
 });
