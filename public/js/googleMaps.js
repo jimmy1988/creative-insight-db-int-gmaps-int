@@ -15,6 +15,7 @@ var currentLng;
 var xhr = null;
 var queryString = "";
 var markers = [];
+var places = [];
 
 function createmarker(place = null){
 
@@ -81,6 +82,73 @@ function initializeMap() {
   }
 
   $("#curtain-outer").fadeOut(500);
+}
+
+function displayDirections(route = []){
+  var html = "";
+  if(route != undefined && route != null && route.length > 0){
+    html = html + "<div class=\"card-header text-center\" id=\"rightPaneHeader\">Directions</div>";
+
+    for(var i = 0; i < route.length; i++){
+      var stepNumber = i + 1;
+
+      html = html + "<div class=\"container-fluid directions-entry\">";
+      html = html + "<div class=\"directions-entry-row\">";
+      html = html + "<div class=\"step-number-container text-center\">";
+      html = html + "<div class=\"step-number\">" + stepNumber + "</div>";
+      html = html + "</div>";
+      html = html + "<div class=\"step-instructions-container text-center\">";
+      html = html + "<div class=\"step-instructions\">" + route[i].instructions + "</div>";
+      html = html + "</div>";
+      html = html + "<div class=\"clearfix\"></div>";
+      html = html + "</div>";
+      html = html + "</div>";
+    }
+  }
+
+  return html;
+}
+
+function getDirections(event, elem, placesArrayIndex = -1){
+  event.preventDefault();
+  if(placesArrayIndex != undefined && placesArrayIndex != null && placesArrayIndex >= 0){
+    var thisPlace = places[placesArrayIndex];
+
+    // resetAll(true, false, true, false);
+
+    var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(currentloc.lat, currentloc.lng), new google.maps.LatLng(thisPlace.lat, thisPlace.lng));
+    distance = parseFloat(distance) / parseFloat("1609.344");
+    distance = parseFloat(distance.toFixed(1));
+
+    $("#rightPaneContent").html("");
+    // $("#rightPaneContent").append(createListItem(thisPlace, distance, markersArrayIndex, placesArrayIndex));
+    // $("#rightPaneContent .directionsButtonContainer .get-directions-button").hide();
+    // $("#rightPaneContent .directionsButtonContainer").append("<a href=\"#\" onclick=\"resetSearchResults()\" class=\"btn btn-success resetSearchResultsButton\">Restore Search</a>");
+
+    var home = center;
+    var destination = thisPlace.geometry.location;
+
+    directionsRenderer.setMap(map);
+
+    var request = {
+      origin: home,
+      destination: destination,
+      travelMode: 'DRIVING'
+    };
+
+    directionsService.route(request, function(result, status) {
+      if (status == 'OK') {
+        directionsRenderer.setDirections(result);
+        var routeArray = result.routes[0].legs[0].steps
+        $("#rightPaneContent").append(displayDirections(routeArray));
+      }
+    });
+
+    $("#rightPaneContent").show();
+
+  }else{
+    alert("No location found");
+  }
 }
 
 function loadXHR(){
@@ -182,7 +250,7 @@ function responseXHR(){
          }
 
          var responseHTML = "";
-         responseHTML = responseHTML + "<a href=\"#\" onclick=\"getDirections(event, this," + markersArrayIndex + ", " + placesArrayIndex + ")\" class=\"container-fluid search-result\">";
+         responseHTML = responseHTML + "<a href=\"#\" onclick=\"getDirections(event, this," + i + ")\" class=\"container-fluid search-result\">";
          responseHTML = responseHTML + " <div class=\"row\">";
          responseHTML = responseHTML + "   <div class=\"col-xs-9 col-md-9 search-column-1\">";
 
