@@ -3,14 +3,20 @@
 @section('content')
 
 <div class="container-fluid no-gutters" id="map-container">
-  <form method="post" action="" id="searchForm">
+  <form method="post" action="#" id="searchForm">
+    @csrf
+    <input type="hidden" id="current-lat" value="" />
+    <input type="hidden" id="current-lng" value="" />
     <div class="row" id="search-container">
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
           <div class="form-group">
             <div class="row">
-              <div id="search-box-container" class="col-md-8">
+              <div id="search-box-container" class="col-md-10">
                 <div class="form-group">
                   <input type="text" id="search-box" class="form-control" placeholder="Search For Businesses e.g.Nandos"/>
+                  <div class="" id="search-results-container">
+
+                  </div>
                 </div>
               </div>
               <div id="distance-container" class="col-md-2">
@@ -23,9 +29,9 @@
                   </select>
                 </div>
               </div>
-              <div id="search-button-container" class="col-md-2">
+              {{-- <div id="search-button-container" class="col-md-2">
                 <button type="submit" id="search-button" class="btn btn-secondary"><i class="fas fa-crosshairs"></i></button>
-              </div>
+              </div> --}}
             </div>
           </div>
       </div>
@@ -60,5 +66,10 @@
     </div>
   </div>
 </div>
+
+<script type="text/javascript">
+  var ajaxSearchRoute = "{{route('index.ajax.searchPlaces', ["","","", ""])}}";
+</script>
+
 
 @endsection

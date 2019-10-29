@@ -178,6 +178,44 @@
     padding: 0 10px;
 }
 
+.search-result {
+  background: #EFEFEF;
+  display: block;
+  padding: 5px 0;
+  color: #000;
+  border-bottom: 2px solid #FFF;
+}
+
+.search-place-name{
+  font-size: 14pt;
+    font-weight: 800;
+}
+
+.search-place-address {
+    font-size: 10pt;
+}
+
+.miles-amount {
+    display: block;
+}
+
+#search-results-container {
+    border: 1px solid #000;
+    border-top: none;
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: absolute;
+    z-index: 1;
+    width: 97.5%;
+    background: #EFEFEF;
+    display: none;
+}
+
+.search-column-1{
+  border-right:1px solid #000;
+}
+
 @media screen and (max-width:767px){
   #search-button-container{
     margin-top:25px;
