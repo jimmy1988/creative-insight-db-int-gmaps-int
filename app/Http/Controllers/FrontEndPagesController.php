@@ -75,16 +75,16 @@ class FrontEndPagesController extends Controller
             $keys = array_column($finalSearchResultsArray, 'distance');
             array_multisort($keys, SORT_ASC, $finalSearchResultsArray);
 
-            return json_encode($finalSearchResultsArray);
+            return json_encode($finalSearchResultsArray, JSON_FORCE_OBJECT);
 
           }else{
-            return json_encode($searchResults->toArray());
+            return json_encode($searchResults->toArray(), JSON_FORCE_OBJECT);
           }
         }else{
-          return json_encode(array());
+          return json_encode(array(), JSON_FORCE_OBJECT);
         }
       }else{
-        return json_encode(array());
+        return json_encode(array(), JSON_FORCE_OBJECT);
       }
     }
 }

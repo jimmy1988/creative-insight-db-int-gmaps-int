@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="container-fluid no-gutters" id="map-container">
-  <form method="post" action="" id="searchForm">
+  <form method="post" action="#" id="searchForm">
     @csrf
     <input type="hidden" id="current-lat" value="" />
     <input type="hidden" id="current-lng" value="" />
@@ -15,7 +15,7 @@
                 <div class="form-group">
                   <input type="text" id="search-box" class="form-control" placeholder="Search For Businesses e.g.Nandos"/>
                   <div class="" id="search-results-container">
-                  
+
                   </div>
                 </div>
               </div>
