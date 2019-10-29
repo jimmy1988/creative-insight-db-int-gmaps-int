@@ -47,17 +47,13 @@ function initializeMap() {
   // Try HTML5 geolocation.
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
-      // currentloc.lat = parseFloat(position.coords.latitude);
-      // currentloc.lng = parseFloat(position.coords.longitude);
-      currentloc.lat = parseFloat(defaultLat);
-      currentloc.lng = parseFloat(defaultLong);
+      currentloc.lat = parseFloat(position.coords.latitude);
+      currentloc.lng = parseFloat(position.coords.longitude);
 
       $("#current-lat").val(currentloc.lat);
       $("#current-lng").val(currentloc.lng);
 
-
       center = new google.maps.LatLng(currentloc.lat, currentloc.lng);
-      // center = new google.maps.LatLng(defaultLat, defaultLong);
 
       var icon = {
         url: "https://image.flaticon.com/icons/svg/60/60834.svg",
@@ -82,8 +78,30 @@ function initializeMap() {
       handleLocationError(true, infoWindow, map.getCenter());
     }, {maximumAge:50, timeout:5000, enableHighAccuracy: true});
   } else {
-    // Browser doesn't support Geolocation
-    handleLocationError(false, infoWindow, map.getCenter());
+    currentloc.lat = parseFloat(defaultLat);
+    currentloc.lng = parseFloat(defaultLong);
+
+    center = new google.maps.LatLng(currentloc.lat, currentloc.lng);
+
+    var icon = {
+      url: "https://image.flaticon.com/icons/svg/60/60834.svg",
+      scaledSize: new google.maps.Size(30, 30)
+    };
+
+    marker.setPosition(center);
+    marker.setMap(map);
+    marker.setAnimation(google.maps.Animation.BOUNCE);
+    marker.setIcon(icon);
+    marker.setVisible(true);
+
+    var infowindow = new google.maps.InfoWindow({
+      content: "Your Location"
+    });
+    marker.addListener('click', function(){
+      infowindow.open(map, this);
+    });
+
+    map.setCenter(center);
   }
 
   $("#curtain-outer").fadeOut(500);
@@ -119,16 +137,11 @@ function getDirections(event, elem, placesArrayIndex = -1){
   if(placesArrayIndex != undefined && placesArrayIndex != null && placesArrayIndex >= 0){
     var thisPlace = places[placesArrayIndex];
 
-    // resetAll(true, false, true, false);
-
     var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(currentloc.lat, currentloc.lng), new google.maps.LatLng(thisPlace.place_location_lat, thisPlace.place_location_lng));
     distance = parseFloat(distance) / parseFloat("1609.344");
     distance = parseFloat(distance.toFixed(1));
 
     $("#rightPaneContent").html("");
-    // $("#rightPaneContent").append(createListItem(thisPlace, distance, markersArrayIndex, placesArrayIndex));
-    // $("#rightPaneContent .directionsButtonContainer .get-directions-button").hide();
-    // $("#rightPaneContent .directionsButtonContainer").append("<a href=\"#\" onclick=\"resetSearchResults()\" class=\"btn btn-success resetSearchResultsButton\">Restore Search</a>");
 
     var home = center;
     var destination = new google.maps.LatLng(thisPlace.place_location_lat, thisPlace.place_location_lng);
