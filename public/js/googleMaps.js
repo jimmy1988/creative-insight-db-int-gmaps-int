@@ -16,6 +16,7 @@ var xhr = null;
 var queryString = "";
 var markers = [];
 var places = [];
+var newRequest = false;
 
 function createmarker(place = null){
 
@@ -46,13 +47,17 @@ function initializeMap() {
   // Try HTML5 geolocation.
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
-      currentloc.lat = parseFloat(position.coords.latitude.toFixed(7));
-      currentloc.lng = parseFloat(position.coords.longitude.toFixed(7));
+      // currentloc.lat = parseFloat(position.coords.latitude);
+      // currentloc.lng = parseFloat(position.coords.longitude);
+      currentloc.lat = parseFloat(defaultLat);
+      currentloc.lng = parseFloat(defaultLong);
 
-      $("#current-lat").val(parseFloat(position.coords.latitude.toFixed(7)));
-      $("#current-lng").val(parseFloat(position.coords.longitude.toFixed(7)));
+      $("#current-lat").val(currentloc.lat);
+      $("#current-lng").val(currentloc.lng);
+
 
       center = new google.maps.LatLng(currentloc.lat, currentloc.lng);
+      // center = new google.maps.LatLng(defaultLat, defaultLong);
 
       var icon = {
         url: "https://image.flaticon.com/icons/svg/60/60834.svg",
@@ -72,7 +77,7 @@ function initializeMap() {
         infowindow.open(map, this);
       });
 
-      map.setCenter(currentloc);
+      map.setCenter(center);
     }, function() {
       handleLocationError(true, infoWindow, map.getCenter());
     }, {maximumAge:50, timeout:5000, enableHighAccuracy: true});
@@ -116,7 +121,7 @@ function getDirections(event, elem, placesArrayIndex = -1){
 
     // resetAll(true, false, true, false);
 
-    var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(currentloc.lat, currentloc.lng), new google.maps.LatLng(thisPlace.lat, thisPlace.lng));
+    var distance = google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(currentloc.lat, currentloc.lng), new google.maps.LatLng(thisPlace.place_location_lat, thisPlace.place_location_lng));
     distance = parseFloat(distance) / parseFloat("1609.344");
     distance = parseFloat(distance.toFixed(1));
 
@@ -126,7 +131,7 @@ function getDirections(event, elem, placesArrayIndex = -1){
     // $("#rightPaneContent .directionsButtonContainer").append("<a href=\"#\" onclick=\"resetSearchResults()\" class=\"btn btn-success resetSearchResultsButton\">Restore Search</a>");
 
     var home = center;
-    var destination = thisPlace.geometry.location;
+    var destination = new google.maps.LatLng(thisPlace.place_location_lat, thisPlace.place_location_lng);
 
     directionsRenderer.setMap(map);
 
@@ -145,6 +150,8 @@ function getDirections(event, elem, placesArrayIndex = -1){
     });
 
     $("#rightPaneContent").show();
+    resetSearch(true, true, true, true, false, false);
+    $("#mapContainerMain").removeAttr("style");
 
   }else{
     alert("No location found");
@@ -159,7 +166,7 @@ function loadXHR(){
    }
 }
 
-function resetSearch(clearSearchContent = true, hideSearchContent = true, removeResultsClass = true, clearMarkers = true){
+function resetSearch(clearSearchContent = true, hideSearchContent = true, removeResultsClass = true, clearMarkers = true, clearDirections = true, addStyles = true){
 
   if(clearSearchContent){
     $("#search-results-container").html("");
@@ -181,17 +188,32 @@ function resetSearch(clearSearchContent = true, hideSearchContent = true, remove
       }
     }
   }
+
+  if(clearDirections){
+    directionsRenderer.setMap(null);
+  }
+
+  if(addStyles){
+    $("#mapContainerMain").css({
+      "display":"block",
+      "width":"100% !important",
+      "max-width":"100%",
+      "flex":"unset"
+    });
+  }
 }
 
 function responseXHR(){
-  if (xhr.readyState == 4 && xhr.status == 200) {
+  if (xhr.readyState == 4 && xhr.status == 200 && newRequest == false) {
     var responseJSON = JSON.parse(this.responseText);
     var responseJSONCount = Object.keys(responseJSON).length;
     resetSearch();
      if(responseJSONCount > 0 && $("#search-box").val() != ""){
 
+      places = [];
        for(var i = 0; i < responseJSONCount; i++){
 
+         places.push(responseJSON[i])
          var address = "";
          if(responseJSON[i].place_address_1 != null && responseJSON[i].place_address_1 != undefined && responseJSON[i].place_address_1 != ""){
            if(address!= null && address != undefined && address != ""){
@@ -322,7 +344,7 @@ function searchResults(){
     currentLat != undefined && currentLat != null && currentLat != "" &&
     currentLng != undefined && currentLng != null && currentLng != ""
   ){
-
+    newRequest = true;
     $("#search-results-container").html("");
     loadXHR();
 
@@ -331,6 +353,7 @@ function searchResults(){
     queryString = "/" + searchTerm + "/" + currentLat + "/" + currentLng + "/" + distanceMiles;
 
     xhr.open("GET", ajaxSearchRoute + queryString, true);
+    newRequest = false;
     xhr.send();
   }else{
     resetSearch();
@@ -340,11 +363,11 @@ function searchResults(){
 $(document).ready(function(){
   $("#search-box").on("keyup", searchResults);
   $("#distance-box").on("change", searchResults);
-  $("#search-box, #distance-box").on("focusout", function(){
+  $("#search-box, #distance-box").on("onblur", function(){
     resetSearch();
   });
 
-  // $("#search-box, #distance-box").on("focusin", function(){
-  //   console.log("Got Focus");
-  // });
+  $("#searchForm").on("submit", function(){
+    event.preventDefault();
+  });
 });
